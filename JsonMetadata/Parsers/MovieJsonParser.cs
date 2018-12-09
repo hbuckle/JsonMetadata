@@ -63,6 +63,19 @@ namespace JsonMetadata.Parsers
               Type = (PersonType)Enum.Parse(typeof(PersonType), jsonperson.type),
               Role = jsonperson.role != null ? jsonperson.role : string.Empty
             };
+            var image = person.ImageInfos.FirstOrDefault(i => i.Type == ImageType.Primary);
+            if (image == null)
+            {
+              var primary = new FileSystemMetadata(){
+                FullName = jsonperson.thumb,
+                Exists = true
+              };
+              item.AddImage(primary, ImageType.Primary);
+            }
+            else
+            {
+              image.Path = jsonperson.thumb;
+            }
             person.SetProviderId(MetadataProviders.Tmdb, jsonperson.tmdbid);
             person.SetProviderId(MetadataProviders.Imdb, jsonperson.imdbid);
             metadataResult.AddPerson(person);
