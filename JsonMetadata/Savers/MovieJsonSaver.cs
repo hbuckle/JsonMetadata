@@ -91,16 +91,34 @@ namespace JsonMetadata.Savers
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager)
     {
+      var hasAspectRatio = item as IHasAspectRatio;
       var output = new JsonMovie()
       {
+        id = item.InternalId,
         title = item.Name ?? string.Empty,
+        originaltitle = item.OriginalTitle ?? string.Empty,
         sorttitle = item.ForcedSortName ?? string.Empty,
+        // dateadded = item.DateCreated.LocalDateTime,
+        communityrating = item.CommunityRating,
+        criticrating = item.CriticRating,
+        tagline = item.Tagline ?? string.Empty,
         overview = item.Overview ?? string.Empty,
-        tmdbid = item.GetProviderId(MetadataProviders.Tmdb),
-        imdbid = item.GetProviderId(MetadataProviders.Imdb),
+        releasedate = item.PremiereDate.HasValue ? item.PremiereDate.Value.LocalDateTime : new DateTime?(),
         year = item.ProductionYear,
+        parentalrating = item.GetParentalRatingValue(),
+        customrating = item.CustomRating ?? string.Empty,
+        originalaspectratio = hasAspectRatio != null ? hasAspectRatio.AspectRatio : string.Empty,
+        // threedformat
+        imdbid = item.GetProviderId(MetadataProviders.Imdb) ?? string.Empty,
+        tmdbid = item.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty,
+        tmdbcollectionid = item.GetProviderId(MetadataProviders.TmdbCollection) ?? string.Empty,
         lockdata = item.IsLocked
       };
+      output.genres = new List<string>();
+      foreach (var genre in item.Genres)
+      {
+        output.genres.Add(genre);
+      }
       var people = item.SupportsPeople ? libraryManager.GetItemPeople(new InternalPeopleQuery
       {
         ItemIds = new[] { item.InternalId },
@@ -114,14 +132,11 @@ namespace JsonMetadata.Savers
         var personitem = libraryManager.GetItemById(person.Id);
         var image = person.ImageInfos.FirstOrDefault(i => i.Type == ImageType.Primary);
         var jsonperson = new JsonPerson();
-        if (image != null)
-        {
-          jsonperson.thumb = GetImagePathToSave(image, libraryManager, options);
-        }
+        jsonperson.thumb = image != null ? GetImagePathToSave(image, libraryManager, options) : string.Empty;
         jsonperson.name = person.Name ?? string.Empty;
         jsonperson.id = person.Id;
-        jsonperson.tmdbid = personitem.GetProviderId(MetadataProviders.Tmdb);
-        jsonperson.imdbid = personitem.GetProviderId(MetadataProviders.Imdb);
+        jsonperson.tmdbid = personitem.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty;
+        jsonperson.imdbid = personitem.GetProviderId(MetadataProviders.Imdb) ?? string.Empty;
         jsonperson.type = person.Type.ToString();
         switch (person.Type)
         {
@@ -129,11 +144,22 @@ namespace JsonMetadata.Savers
             jsonperson.role = person.Role ?? string.Empty;
             break;
           case PersonType.Director:
+            jsonperson.role = string.Empty;
             break;
           default:
             break;
         }
         output.people.Add(jsonperson);
+      }
+      output.studios = new List<string>();
+      foreach (var studio in item.Studios)
+      {
+        output.studios.Add(studio);
+      }
+      output.tags = new List<string>();
+      foreach (var tag in item.Tags)
+      {
+        output.tags.Add(tag);
       }
       return output;
     }
@@ -143,10 +169,10 @@ namespace JsonMetadata.Savers
       var list = base.GetTagsUsed(item);
       list.AddRange(new string[]
       {
-                "album",
-                "artist",
-                "set",
-                "id"
+        "album",
+        "artist",
+        "set",
+        "id"
       });
       return list;
     }

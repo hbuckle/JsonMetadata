@@ -81,10 +81,10 @@ namespace JsonMetadata.Parsers
       _validProviderIds.Add("tmdbcolid", "TmdbCollection");
       _validProviderIds.Add("imdb_id", "Imdb");
 
-      DeserializeItem(metadataResult, metadataFile);
+      DeserializeItem(metadataResult, metadataFile, Logger);
     }
 
-    protected virtual void DeserializeItem(MetadataResult<T> metadataResult, string metadataFile)
+    protected virtual void DeserializeItem(MetadataResult<T> metadataResult, string metadataFile, ILogger logger)
     {
     }
   }
