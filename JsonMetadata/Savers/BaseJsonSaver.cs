@@ -9,6 +9,7 @@ using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Serialization;
 using JsonMetadata.Configuration;
 using JsonMetadata.Models;
 using System;
@@ -33,7 +34,6 @@ namespace JsonMetadata.Savers
     public static readonly string YouTubeWatchUrl = "https://www.youtube.com/watch?v=";
 
     private static readonly Dictionary<string, string> CommonTags = new[] {
-
                     "plot",
                     "customrating",
                     "lockdata",
@@ -97,7 +97,7 @@ namespace JsonMetadata.Savers
 
         }.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
 
-    protected BaseJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger)
+    protected BaseJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger, IJsonSerializer jsonSerializer)
     {
       Logger = logger;
       UserDataManager = userDataManager;
@@ -105,6 +105,7 @@ namespace JsonMetadata.Savers
       LibraryManager = libraryManager;
       ConfigurationManager = configurationManager;
       FileSystem = fileSystem;
+      JsonSerializer = jsonSerializer;
     }
 
     protected IFileSystem FileSystem { get; private set; }
@@ -113,6 +114,7 @@ namespace JsonMetadata.Savers
     protected IUserManager UserManager { get; private set; }
     protected IUserDataManager UserDataManager { get; private set; }
     protected ILogger Logger { get; private set; }
+    protected IJsonSerializer JsonSerializer { get; private set; }
 
     protected ItemUpdateType MinimumUpdateType
     {
@@ -234,7 +236,7 @@ namespace JsonMetadata.Savers
       var serializeditem = SerializeItem(item, ConfigurationManager, LibraryManager);
       using (var writer = JsonReaderWriterFactory.CreateJsonWriter(stream, Encoding.UTF8, false, true, "  "))
       {
-        var serializer = new DataContractJsonSerializer(typeof(JsonMovie));
+        var serializer = new DataContractJsonSerializer(typeof(JsonObject));
         serializer.WriteObject(writer, serializeditem);
       }
     }

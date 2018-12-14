@@ -6,6 +6,7 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
+using MediaBrowser.Model.Serialization;
 using System.Collections.Generic;
 using System.IO;
 using System;
@@ -126,12 +127,12 @@ namespace JsonMetadata.Savers
         EnableGuids = true,
         EnableIds = true
       }) : new List<PersonInfo>();
-      output.people = new List<JsonPerson>();
+      output.people = new List<JsonCastCrew>();
       foreach (var person in people)
       {
         var personitem = libraryManager.GetItemById(person.Id);
         var image = person.ImageInfos.FirstOrDefault(i => i.Type == ImageType.Primary);
-        var jsonperson = new JsonPerson();
+        var jsonperson = new JsonCastCrew();
         jsonperson.thumb = image != null ? GetImagePathToSave(image, libraryManager, options) : string.Empty;
         jsonperson.name = person.Name ?? string.Empty;
         jsonperson.id = person.Id;
@@ -177,7 +178,7 @@ namespace JsonMetadata.Savers
       return list;
     }
 
-    public MovieJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger, IXmlReaderSettingsFactory xmlReaderSettingsFactory) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger)
+    public MovieJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger, IJsonSerializer jsonSerializer) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger, jsonSerializer)
     {
     }
   }

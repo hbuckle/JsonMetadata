@@ -62,7 +62,7 @@ namespace JsonMetadata.Models
     public List<string> genres { get; set; }
 
     [DataMember(Name = "people", Order = 19)]
-    public List<JsonPerson> people { get; set; }
+    public List<JsonCastCrew> people { get; set; }
 
     [DataMember(Name = "studios", Order = 20)]
     public List<string> studios { get; set; }
