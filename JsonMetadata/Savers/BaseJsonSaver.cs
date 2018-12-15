@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using MediaBrowser.Controller.Extensions;
 using MediaBrowser.Model.Extensions;
@@ -232,7 +233,10 @@ namespace JsonMetadata.Savers
       var serializeditem = SerializeItem(item, ConfigurationManager, LibraryManager);
       using (var writer = JsonReaderWriterFactory.CreateJsonWriter(stream, Encoding.UTF8, false, true, "  "))
       {
-        var serializer = new DataContractJsonSerializer(typeof(JsonObject));
+        var settings = new DataContractJsonSerializerSettings();
+        settings.EmitTypeInformation = EmitTypeInformation.Never;
+        settings.DateTimeFormat = new DateTimeFormat("yyyy-MM-dd");
+        var serializer = new DataContractJsonSerializer(typeof(JsonObject), settings);
         serializer.WriteObject(writer, serializeditem);
       }
     }
