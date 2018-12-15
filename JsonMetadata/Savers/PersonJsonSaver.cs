@@ -10,11 +10,9 @@ using MediaBrowser.Model.Serialization;
 using System.Collections.Generic;
 using System.IO;
 using System;
-using System.Xml;
 using System.Linq;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
-using MediaBrowser.Model.Xml;
 using JsonMetadata.Configuration;
 using JsonMetadata.Models;
 
@@ -22,7 +20,7 @@ namespace JsonMetadata.Savers
 {
   public class PersonJsonSaver : BaseJsonSaver
   {
-    public PersonJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger, IJsonSerializer jsonSerializer) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger, jsonSerializer)
+    public PersonJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger)
     {
     }
     protected override string GetLocalSavePath(BaseItem item)
@@ -31,10 +29,6 @@ namespace JsonMetadata.Savers
       var letter = item.Name[0];
       var basepath = ConfigurationManager.ApplicationPaths.InternalMetadataPath;
       return $"{basepath}\\People\\{letter}\\{item.Name} ({id})\\person.json";
-    }
-    protected override void WriteCustomElements(BaseItem item, XmlWriter writer)
-    {
-      throw new NotImplementedException();
     }
     public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType)
     {

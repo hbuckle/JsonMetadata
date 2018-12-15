@@ -22,6 +22,9 @@ namespace JsonMetadata.Savers
 {
   public class MovieJsonSaver : BaseJsonSaver
   {
+    public MovieJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger)
+    {
+    }
     protected override string GetLocalSavePath(BaseItem item)
     {
       var paths = GetMovieSavePaths(new ItemInfo(item), FileSystem);
@@ -49,13 +52,6 @@ namespace JsonMetadata.Savers
       }
       else
       {
-        // http://kodi.wiki/view/Json_files/Movies
-        // movie.json will override all and any .json files in the same folder as the media files if you use the "Use foldernames for lookups" setting. If you don't, then moviename.json is used
-        //if (!item.IsInMixedFolder && item.ItemType == typeof(Movie))
-        //{
-        //    list.Add(Path.Combine(item.ContainingFolderPath, "movie.json"));
-        //}
-
         list.Add(Path.ChangeExtension(item.Path, ".json"));
 
         if (!item.IsInMixedFolder)
@@ -83,11 +79,6 @@ namespace JsonMetadata.Savers
         return updateType >= MinimumUpdateType;
       }
       return false;
-    }
-
-    protected override void WriteCustomElements(BaseItem item, XmlWriter writer)
-    {
-      throw new NotImplementedException();
     }
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager)
@@ -176,10 +167,6 @@ namespace JsonMetadata.Savers
         "id"
       });
       return list;
-    }
-
-    public MovieJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger, IJsonSerializer jsonSerializer) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger, jsonSerializer)
-    {
     }
   }
 }

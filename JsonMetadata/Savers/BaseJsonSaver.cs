@@ -20,12 +20,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Xml;
 using System.Runtime.Serialization.Json;
 using MediaBrowser.Controller.Extensions;
 using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.IO;
-using MediaBrowser.Model.Xml;
 
 namespace JsonMetadata.Savers
 {
@@ -97,7 +95,7 @@ namespace JsonMetadata.Savers
 
         }.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
 
-    protected BaseJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger, IJsonSerializer jsonSerializer)
+    protected BaseJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger)
     {
       Logger = logger;
       UserDataManager = userDataManager;
@@ -105,7 +103,6 @@ namespace JsonMetadata.Savers
       LibraryManager = libraryManager;
       ConfigurationManager = configurationManager;
       FileSystem = fileSystem;
-      JsonSerializer = jsonSerializer;
     }
 
     protected IFileSystem FileSystem { get; private set; }
@@ -114,7 +111,6 @@ namespace JsonMetadata.Savers
     protected IUserManager UserManager { get; private set; }
     protected IUserDataManager UserDataManager { get; private set; }
     protected ILogger Logger { get; private set; }
-    protected IJsonSerializer JsonSerializer { get; private set; }
 
     protected ItemUpdateType MinimumUpdateType
     {
@@ -191,7 +187,7 @@ namespace JsonMetadata.Savers
       var path = GetSavePath(item);
       using (var memoryStream = new MemoryStream())
       {
-        Save(item, memoryStream, path);
+        Save(item, memoryStream);
 
         memoryStream.Position = 0;
 
@@ -230,7 +226,7 @@ namespace JsonMetadata.Savers
       }
     }
 
-    private void Save(BaseItem item, Stream stream, string xmlPath)
+    private void Save(BaseItem item, Stream stream)
     {
       var options = ConfigurationManager.GetJsonConfiguration();
       var serializeditem = SerializeItem(item, ConfigurationManager, LibraryManager);
@@ -243,15 +239,6 @@ namespace JsonMetadata.Savers
 
     protected abstract JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager);
 
-    protected abstract void WriteCustomElements(BaseItem item, XmlWriter writer);
-
-    public static void AddMediaInfo<T>(T item, XmlWriter writer)
-     where T : IHasMediaSources
-    {
-      throw new NotImplementedException();
-    }
-
-
     public const string DateAddedFormat = "yyyy-MM-dd HH:mm:ss";
 
     /// <summary>
@@ -263,16 +250,6 @@ namespace JsonMetadata.Savers
     {
       // This is what xbmc expects
       return url.Replace(YouTubeWatchUrl, "plugin://plugin.video.youtube/?action=play_video&videoid=", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private void AddImages(BaseItem item, XmlWriter writer, ILibraryManager libraryManager, IServerConfigurationManager config)
-    {
-      throw new NotImplementedException();
-    }
-
-    private void AddUserData(BaseItem item, XmlWriter writer, IUserManager userManager, IUserDataManager userDataRepo, XbmcMetadataOptions options)
-    {
-      throw new NotImplementedException();
     }
 
     protected string GetImagePathToSave(ItemImageInfo image, ILibraryManager libraryManager, IServerConfigurationManager config)
