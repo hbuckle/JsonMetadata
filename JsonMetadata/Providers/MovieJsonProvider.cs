@@ -18,7 +18,6 @@ namespace JsonMetadata.Providers
         private readonly ILogger _logger;
         private readonly IConfigurationManager _config;
         private readonly IProviderManager _providerManager;
-        protected IXmlReaderSettingsFactory XmlReaderSettingsFactory { get; private set; }
 
         public MovieJsonProvider(IFileSystem fileSystem, ILogger logger, IConfigurationManager config, IProviderManager providerManager)
             : base(fileSystem)

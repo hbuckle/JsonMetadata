@@ -8,72 +8,72 @@ using MediaBrowser.Model.IO;
 
 namespace JsonMetadata.Providers
 {
-    public abstract class BaseJsonProvider<T> : ILocalMetadataProvider<T>, IHasItemChangeMonitor
-        where T : BaseItem, new()
+  public abstract class BaseJsonProvider<T> : ILocalMetadataProvider<T>, IHasItemChangeMonitor
+      where T : BaseItem, new()
+  {
+    protected IFileSystem FileSystem;
+
+    public Task<MetadataResult<T>> GetMetadata(ItemInfo info,
+        IDirectoryService directoryService,
+        CancellationToken cancellationToken)
     {
-        protected IFileSystem FileSystem;
+      var result = new MetadataResult<T>();
 
-        public Task<MetadataResult<T>> GetMetadata(ItemInfo info,
-            IDirectoryService directoryService,
-            CancellationToken cancellationToken)
-        {
-            var result = new MetadataResult<T>();
+      var file = GetJsonFile(info, directoryService);
 
-            var file = GetJsonFile(info, directoryService);
+      if (file == null)
+      {
+        return Task.FromResult(result);
+      }
 
-            if (file == null)
-            {
-                return Task.FromResult(result);
-            }
+      var path = file.FullName;
 
-            var path = file.FullName;
+      try
+      {
+        result.Item = new T();
 
-            try
-            {
-                result.Item = new T();
+        Fetch(result, path, cancellationToken);
+        result.HasMetadata = true;
+      }
+      catch (FileNotFoundException)
+      {
+        result.HasMetadata = false;
+      }
+      catch (IOException)
+      {
+        result.HasMetadata = false;
+      }
 
-                Fetch(result, path, cancellationToken);
-                result.HasMetadata = true;
-            }
-            catch (FileNotFoundException)
-            {
-                result.HasMetadata = false;
-            }
-            catch (IOException)
-            {
-                result.HasMetadata = false;
-            }
-
-            return Task.FromResult(result);
-        }
-
-        protected abstract void Fetch(MetadataResult<T> result, string path, CancellationToken cancellationToken);
-
-        protected BaseJsonProvider(IFileSystem fileSystem)
-        {
-            FileSystem = fileSystem;
-        }
-
-        protected abstract FileSystemMetadata GetJsonFile(ItemInfo info, IDirectoryService directoryService);
-
-        public bool HasChanged(BaseItem item, IDirectoryService directoryService)
-        {
-            var file = GetJsonFile(new ItemInfo(item), directoryService);
-
-            if (file == null)
-            {
-                return false;
-            }
-
-            return file.Exists && item.IsGreaterThanDateLastSaved(FileSystem.GetLastWriteTimeUtc(file));
-        }
-
-        public string Name
-        {
-            get
-            {
-                return BaseJsonSaver.SaverName;
-            }
-        }
+      return Task.FromResult(result);
     }
+
+    protected abstract void Fetch(MetadataResult<T> result, string path, CancellationToken cancellationToken);
+
+    protected BaseJsonProvider(IFileSystem fileSystem)
+    {
+      FileSystem = fileSystem;
+    }
+
+    protected abstract FileSystemMetadata GetJsonFile(ItemInfo info, IDirectoryService directoryService);
+
+    public bool HasChanged(BaseItem item, IDirectoryService directoryService)
+    {
+      var file = GetJsonFile(new ItemInfo(item), directoryService);
+
+      if (file == null)
+      {
+        return false;
+      }
+
+      return file.Exists && item.IsGreaterThanDateLastSaved(FileSystem.GetLastWriteTimeUtc(file));
+    }
+
+    public string Name
+    {
+      get
+      {
+        return BaseJsonSaver.SaverName;
+      }
+    }
+  }
 }
