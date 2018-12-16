@@ -17,9 +17,9 @@ using JsonMetadata.Models;
 
 namespace JsonMetadata.Savers
 {
-  public class TvShowJsonSaver : BaseJsonSaver
+  public class SeriesJsonSaver : BaseJsonSaver
   {
-    public TvShowJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger)
+    public SeriesJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger)
     {
     }
     protected override string GetLocalSavePath(BaseItem item)
@@ -43,9 +43,8 @@ namespace JsonMetadata.Savers
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager)
     {
-      var hasAspectRatio = item as IHasAspectRatio;
       var series = item as Series;
-      var output = new JsonTvShow()
+      var output = new JsonSeries()
       {
         id = item.InternalId,
         title = item.Name ?? string.Empty,

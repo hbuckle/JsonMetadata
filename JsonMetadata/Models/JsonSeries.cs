@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace JsonMetadata.Models
 {
   [DataContract]
-  public class JsonTvShow : JsonObject
+  public class JsonSeries : JsonObject
   {
     [DataMember(Name = "title", Order = 401)]
     public string title { get; set; }
