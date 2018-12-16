@@ -59,16 +59,16 @@ namespace JsonMetadata.Models
     public string tmdbcollectionid { get; set; }
 
     [DataMember(Name = "genres", Order = 18)]
-    public List<string> genres { get; set; }
+    public string[] genres { get; set; }
 
     [DataMember(Name = "people", Order = 19)]
     public List<JsonCastCrew> people { get; set; }
 
     [DataMember(Name = "studios", Order = 20)]
-    public List<string> studios { get; set; }
+    public string[] studios { get; set; }
 
     [DataMember(Name = "tags", Order = 21)]
-    public List<string> tags { get; set; }
+    public string[] tags { get; set; }
 
     [DataMember(Name = "lockdata", Order = 22)]
     public bool lockdata { get; set; }

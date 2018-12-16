@@ -35,7 +35,6 @@ namespace JsonMetadata.Parsers
           settings.DateTimeFormat = new DateTimeFormat("yyyy-MM-dd");
           var serializer = new DataContractJsonSerializer(typeof(JsonMovie), settings);
           var jsonmovie = serializer.ReadObject(reader) as JsonMovie;
-          // item.InternalId = jsonmovie.id;
           item.Name = jsonmovie.title;
           item.OriginalTitle = jsonmovie.originaltitle;
           item.ForcedSortName = jsonmovie.sorttitle;
@@ -46,52 +45,41 @@ namespace JsonMetadata.Parsers
           item.Overview = jsonmovie.overview;
           item.PremiereDate = jsonmovie.releasedate;
           item.ProductionYear = jsonmovie.year;
-          // item.ParentIndexNumber = jsonmovie.parentalrating;
+          // parentalrating
           item.CustomRating = jsonmovie.customrating;
-          // original aspect ratio
+          // originalaspectratio
           // 3dformat
           item.SetProviderId(MetadataProviders.Imdb, jsonmovie.imdbid);
           item.SetProviderId(MetadataProviders.Tmdb, jsonmovie.tmdbid);
           item.SetProviderId(MetadataProviders.TmdbCollection, jsonmovie.tmdbcollectionid);
           item.IsLocked = jsonmovie.lockdata;
-          foreach (var genre in jsonmovie.genres)
-          {
-            item.AddGenre(genre);
-          }
+          item.Genres = jsonmovie.genres;
           metadataResult.ResetPeople();
           foreach (var jsonperson in jsonmovie.people)
           {
+            logger.Log(LogSeverity.Info, $"JsonMetadata: Adding person {jsonperson.name}");
             var person = new PersonInfo()
             {
               Name = jsonperson.name,
               Type = (PersonType)Enum.Parse(typeof(PersonType), jsonperson.type),
               Role = jsonperson.role != null ? jsonperson.role : string.Empty
             };
-            var image = person.ImageInfos.FirstOrDefault(i => i.Type == ImageType.Primary);
-            if (image == null)
+            if (!string.IsNullOrEmpty(jsonperson.thumb))
             {
-              var primary = new FileSystemMetadata(){
-                FullName = jsonperson.thumb,
-                Exists = true
+              logger.Log(LogSeverity.Info, $"JsonMetadata: Adding person thumb {jsonperson.thumb}");
+              var primary = new ItemImageInfo()
+              {
+                Path = jsonperson.thumb,
+                Type = ImageType.Primary,
               };
-              item.AddImage(primary, ImageType.Primary);
-            }
-            else
-            {
-              image.Path = jsonperson.thumb;
+              person.ImageInfos = new ItemImageInfo[] {primary};
             }
             person.SetProviderId(MetadataProviders.Tmdb, jsonperson.tmdbid);
             person.SetProviderId(MetadataProviders.Imdb, jsonperson.imdbid);
             metadataResult.AddPerson(person);
           }
-          foreach (var studio in jsonmovie.studios)
-          {
-            item.AddStudio(studio);
-          }
-          foreach (var tag in jsonmovie.tags)
-          {
-            item.AddTag(tag);
-          }
+          item.Studios = jsonmovie.studios;
+          item.Tags = jsonmovie.tags;
         }
       }
     }

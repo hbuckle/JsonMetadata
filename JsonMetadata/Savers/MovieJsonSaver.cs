@@ -106,11 +106,7 @@ namespace JsonMetadata.Savers
         tmdbcollectionid = item.GetProviderId(MetadataProviders.TmdbCollection) ?? string.Empty,
         lockdata = item.IsLocked
       };
-      output.genres = new List<string>();
-      foreach (var genre in item.Genres)
-      {
-        output.genres.Add(genre);
-      }
+      output.genres = item.Genres;
       var people = item.SupportsPeople ? libraryManager.GetItemPeople(new InternalPeopleQuery
       {
         ItemIds = new[] { item.InternalId },
@@ -143,16 +139,8 @@ namespace JsonMetadata.Savers
         }
         output.people.Add(jsonperson);
       }
-      output.studios = new List<string>();
-      foreach (var studio in item.Studios)
-      {
-        output.studios.Add(studio);
-      }
-      output.tags = new List<string>();
-      foreach (var tag in item.Tags)
-      {
-        output.tags.Add(tag);
-      }
+      output.studios = item.Studios;
+      output.tags = item.Tags;
       return output;
     }
 
