@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -29,7 +30,10 @@ namespace JsonMetadata.Parsers
       {
         using (var reader = JsonReaderWriterFactory.CreateJsonReader(stream, Encoding.UTF8, XmlDictionaryReaderQuotas.Max, null))
         {
-          var serializer = new DataContractJsonSerializer(typeof(JsonMovie));
+          var settings = new DataContractJsonSerializerSettings();
+          settings.EmitTypeInformation = EmitTypeInformation.Never;
+          settings.DateTimeFormat = new DateTimeFormat("yyyy-MM-dd");
+          var serializer = new DataContractJsonSerializer(typeof(JsonMovie), settings);
           var jsonmovie = serializer.ReadObject(reader) as JsonMovie;
           // item.InternalId = jsonmovie.id;
           item.Name = jsonmovie.title;
