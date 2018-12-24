@@ -1,3 +1,4 @@
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using JsonMetadata.Savers;
@@ -12,6 +13,7 @@ namespace JsonMetadata.Providers
       where T : BaseItem, new()
   {
     protected IFileSystem FileSystem;
+    protected ILibraryManager LibraryManager;
 
     public Task<MetadataResult<T>> GetMetadata(ItemInfo info,
         IDirectoryService directoryService,
@@ -49,9 +51,10 @@ namespace JsonMetadata.Providers
 
     protected abstract void Fetch(MetadataResult<T> result, string path, CancellationToken cancellationToken);
 
-    protected BaseJsonProvider(IFileSystem fileSystem)
+    protected BaseJsonProvider(IFileSystem fileSystem, ILibraryManager libraryManager)
     {
       FileSystem = fileSystem;
+      LibraryManager = libraryManager;
     }
 
     protected abstract FileSystemMetadata GetJsonFile(ItemInfo info, IDirectoryService directoryService);
