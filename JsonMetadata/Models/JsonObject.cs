@@ -14,6 +14,9 @@ namespace JsonMetadata.Models
     [DataMember(Name = "id", Order = 0)]
     public long id { get; set; }
 
+    [DataMember(Name = "path", Order = 1)]
+    public string path { get; set; }
+
     public static IEnumerable<Type> KnownTypes()
     {
       return from t in typeof(JsonObject).Assembly.GetTypes()
