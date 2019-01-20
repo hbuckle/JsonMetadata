@@ -30,11 +30,6 @@ namespace JsonMetadata.Savers
       return Path.Combine(item.Path, "collection.json");
     }
 
-    protected override string GetRootElementName(BaseItem item)
-    {
-      return "boxset";
-    }
-
     public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType)
     {
       if (!item.SupportsLocalMetadata)

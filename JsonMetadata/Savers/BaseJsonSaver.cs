@@ -30,72 +30,6 @@ namespace JsonMetadata.Savers
 {
   public abstract class BaseJsonSaver : IMetadataFileSaver
   {
-    public static readonly string YouTubeWatchUrl = "https://www.youtube.com/watch?v=";
-
-    private static readonly Dictionary<string, string> CommonTags = new[] {
-                    "plot",
-                    "customrating",
-                    "lockdata",
-                    "dateadded",
-                    "title",
-                    "rating",
-                    "year",
-                    "sorttitle",
-                    "mpaa",
-                    "aspectratio",
-                    "collectionnumber",
-                    "tmdbid",
-                    "rottentomatoesid",
-                    "language",
-                    "tvcomid",
-                    "tagline",
-                    "studio",
-                    "genre",
-                    "tag",
-                    "runtime",
-                    "actor",
-                    "criticrating",
-                    "fileInfo",
-                    "director",
-                    "writer",
-                    "trailer",
-                    "premiered",
-                    "releasedate",
-                    "outline",
-                    "id",
-                    "credits",
-                    "originaltitle",
-                    "watched",
-                    "playcount",
-                    "lastplayed",
-                    "art",
-                    "resume",
-                    "biography",
-                    "formed",
-                    "review",
-                    "style",
-                    "imdbid",
-                    "imdb_id",
-                    "country",
-                    "audiodbalbumid",
-                    "audiodbartistid",
-                    "enddate",
-                    "lockedfields",
-                    "zap2itid",
-                    "tvrageid",
-                    "gamesdbid",
-                    "musicbrainzartistid",
-                    "musicbrainzalbumartistid",
-                    "musicbrainzalbumid",
-                    "musicbrainzreleasegroupid",
-                    "tvdbid",
-                    "collectionitem",
-                    "isuserfavorite",
-                    "userrating",
-                    "countrycode"
-
-        }.ToDictionary(i => i, StringComparer.OrdinalIgnoreCase);
-
     protected BaseJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger)
     {
       Logger = logger;
@@ -155,33 +89,12 @@ namespace JsonMetadata.Savers
     protected abstract string GetLocalSavePath(BaseItem item);
 
     /// <summary>
-    /// Gets the name of the root element.
-    /// </summary>
-    /// <param name="item">The item.</param>
-    /// <returns>System.String.</returns>
-    protected abstract string GetRootElementName(BaseItem item);
-
-    /// <summary>
     /// Determines whether [is enabled for] [the specified item].
     /// </summary>
     /// <param name="item">The item.</param>
     /// <param name="updateType">Type of the update.</param>
     /// <returns><c>true</c> if [is enabled for] [the specified item]; otherwise, <c>false</c>.</returns>
     public abstract bool IsEnabledFor(BaseItem item, ItemUpdateType updateType);
-
-    protected virtual List<string> GetTagsUsed(BaseItem item)
-    {
-      var list = new List<string>();
-      foreach (var providerKey in item.ProviderIds.Keys)
-      {
-        var providerIdTagName = GetTagForProviderKey(providerKey);
-        if (!CommonTags.ContainsKey(providerIdTagName))
-        {
-          list.Add(providerIdTagName);
-        }
-      }
-      return list;
-    }
 
     public void Save(BaseItem item, CancellationToken cancellationToken)
     {
@@ -243,19 +156,6 @@ namespace JsonMetadata.Savers
 
     protected abstract JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager);
 
-    public const string DateAddedFormat = "yyyy-MM-dd HH:mm:ss";
-
-    /// <summary>
-    /// Gets the output trailer URL.
-    /// </summary>
-    /// <param name="url">The URL.</param>
-    /// <returns>System.String.</returns>
-    private string GetOutputTrailerUrl(string url)
-    {
-      // This is what xbmc expects
-      return url.Replace(YouTubeWatchUrl, "plugin://plugin.video.youtube/?action=play_video&videoid=", StringComparison.OrdinalIgnoreCase);
-    }
-
     protected string GetImagePathToSave(ItemImageInfo image, ILibraryManager libraryManager, IServerConfigurationManager config)
     {
       if (!image.IsLocalFile)
@@ -264,16 +164,6 @@ namespace JsonMetadata.Savers
       }
 
       return libraryManager.GetPathAfterNetworkSubstitution(image.Path);
-    }
-
-    private bool IsPersonType(PersonInfo person, PersonType type)
-    {
-      return person.Type == type;
-    }
-
-    private string GetTagForProviderKey(string providerKey)
-    {
-      return providerKey.ToLower() + "id";
     }
   }
 }

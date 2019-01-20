@@ -63,11 +63,6 @@ namespace JsonMetadata.Savers
       return list;
     }
 
-    protected override string GetRootElementName(BaseItem item)
-    {
-      return item is MusicVideo ? "musicvideo" : "movie";
-    }
-
     public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType)
     {
       if (!item.SupportsLocalMetadata)
@@ -142,19 +137,6 @@ namespace JsonMetadata.Savers
       output.studios = item.Studios;
       output.tags = item.Tags;
       return output;
-    }
-
-    protected override List<string> GetTagsUsed(BaseItem item)
-    {
-      var list = base.GetTagsUsed(item);
-      list.AddRange(new string[]
-      {
-        "album",
-        "artist",
-        "set",
-        "id"
-      });
-      return list;
     }
   }
 }

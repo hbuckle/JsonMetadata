@@ -42,10 +42,7 @@ namespace JsonMetadata.Savers
       }
       return false;
     }
-    protected override string GetRootElementName(BaseItem item)
-    {
-      return "person";
-    }
+
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager)
     {
       var output = new JsonPerson()

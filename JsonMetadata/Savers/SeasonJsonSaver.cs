@@ -22,14 +22,10 @@ namespace JsonMetadata.Savers
     public SeasonJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger)
     {
     }
+
     protected override string GetLocalSavePath(BaseItem item)
     {
       return Path.Combine(item.Path, "season.json");
-    }
-
-    protected override string GetRootElementName(BaseItem item)
-    {
-      return "season";
     }
 
     public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType)
@@ -94,16 +90,6 @@ namespace JsonMetadata.Savers
       output.studios = item.Studios;
       output.tags = item.Tags;
       return output;
-    }
-
-    protected override List<string> GetTagsUsed(BaseItem item)
-    {
-      var list = base.GetTagsUsed(item);
-      list.AddRange(new string[]
-      {
-        "seasonnumber",
-      });
-      return list;
     }
   }
 }
