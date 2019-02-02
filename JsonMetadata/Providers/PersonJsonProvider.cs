@@ -10,6 +10,7 @@ using JsonMetadata.Parsers;
 using JsonMetadata.Savers;
 using System.Linq;
 using System.Threading;
+using System.IO;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Xml;
@@ -48,10 +49,7 @@ namespace JsonMetadata.Providers
 
     protected override FileSystemMetadata GetJsonFile(ItemInfo info, IDirectoryService directoryService)
     {
-      return new FileSystemMetadata(){
-        FullName = info.Path,
-        Exists = true,
-      };
+      return directoryService.GetFile(Path.Combine(info.Path, "person.json"));
     }
   }
 }
