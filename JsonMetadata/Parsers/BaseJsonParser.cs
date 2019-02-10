@@ -5,15 +5,19 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Logging;
 using JsonMetadata.Configuration;
+using JsonMetadata.Models;
 using JsonMetadata.Savers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Xml;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Model.IO;
 
@@ -22,9 +26,6 @@ namespace JsonMetadata.Parsers
   public class BaseJsonParser<T>
       where T : BaseItem
   {
-    /// <summary>
-    /// The logger
-    /// </summary>
     protected ILogger Logger { get; private set; }
     protected IFileSystem FileSystem { get; private set; }
     protected IProviderManager ProviderManager { get; private set; }
@@ -32,25 +33,16 @@ namespace JsonMetadata.Parsers
     private readonly IConfigurationManager _config;
     private Dictionary<string, string> _validProviderIds;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BaseJsonParser{T}" /> class.
-    /// </summary>
-    public BaseJsonParser(ILogger logger, IConfigurationManager config, IProviderManager providerManager, IFileSystem fileSystem)
+    public BaseJsonParser(
+      ILogger logger, IConfigurationManager config,
+      IProviderManager providerManager, IFileSystem fileSystem)
     {
-      Logger = logger;
-      _config = config;
-      ProviderManager = providerManager;
-      FileSystem = fileSystem;
+      this.Logger = logger;
+      this._config = config;
+      this.ProviderManager = providerManager;
+      this.FileSystem = fileSystem;
     }
 
-    /// <summary>
-    /// Fetches metadata for an item from one json file
-    /// </summary>
-    /// <param name="metadataResult">The item.</param>
-    /// <param name="metadataFile">The metadata file.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <exception cref="System.ArgumentNullException">
-    /// </exception>
     public void Fetch(MetadataResult<T> metadataResult, string metadataFile, CancellationToken cancellationToken)
     {
       if (metadataResult == null)
@@ -84,8 +76,34 @@ namespace JsonMetadata.Parsers
       DeserializeItem(metadataResult, metadataFile, Logger);
     }
 
-    protected virtual void DeserializeItem(MetadataResult<T> metadataResult, string metadataFile, ILogger logger)
+    protected virtual void DeserializeItem(
+      MetadataResult<T> metadataResult, string metadataFile, ILogger logger
+    ) {}
+
+    protected Object DeserializeToObject(XmlDictionaryReader reader, Type type)
     {
+      var settings = new DataContractJsonSerializerSettings();
+      settings.EmitTypeInformation = EmitTypeInformation.Never;
+      settings.DateTimeFormat = new DateTimeFormat("yyyy-MM-dd");
+      var serializer = new DataContractJsonSerializer(type, settings);
+      return serializer.ReadObject(reader);
+    }
+
+    protected void AddPeople(MetadataResult<T> metadataResult, List<JsonCastCrew> people)
+    {
+      metadataResult.ResetPeople();
+      foreach (var jsonperson in people)
+      {
+        var person = new PersonInfo()
+        {
+          Name = jsonperson.name,
+          Type = (PersonType)Enum.Parse(typeof(PersonType), jsonperson.type),
+          Role = jsonperson.role != null ? jsonperson.role : string.Empty,
+        };
+        person.SetProviderId(MetadataProviders.Tmdb, jsonperson.tmdbid);
+        person.SetProviderId(MetadataProviders.Imdb, jsonperson.imdbid);
+        metadataResult.AddPerson(person);
+      }
     }
   }
 }

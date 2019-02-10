@@ -17,9 +17,10 @@ namespace JsonMetadata.Parsers
 {
   class PersonJsonParser : BaseJsonParser<Person>
   {
-    public PersonJsonParser(ILogger logger, IConfigurationManager config, IProviderManager providerManager, IFileSystem fileSystem) : base(logger, config, providerManager, fileSystem)
-    {
-    }
+    public PersonJsonParser(
+      ILogger logger, IConfigurationManager config,
+      IProviderManager providerManager, IFileSystem fileSystem) :
+      base(logger, config, providerManager, fileSystem) {}
 
     protected override void DeserializeItem(MetadataResult<Person> metadataResult, string metadataFile, ILogger logger)
     {

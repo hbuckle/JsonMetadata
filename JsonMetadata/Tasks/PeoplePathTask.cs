@@ -16,7 +16,10 @@ namespace JsonMetadata.Tasks
     private ILibraryManager libraryManager;
     private IServerConfigurationManager configurationManager;
     private ILogger logger;
-    public PeoplePathTask(ILibraryManager libraryManager, IServerConfigurationManager configurationManager, ILogger logger)
+    public PeoplePathTask(
+      ILibraryManager libraryManager, IServerConfigurationManager configurationManager,
+      ILogger logger
+    )
     {
       this.libraryManager = libraryManager;
       this.configurationManager = configurationManager;

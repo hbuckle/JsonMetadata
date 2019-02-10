@@ -18,9 +18,10 @@ namespace JsonMetadata.Parsers
 {
   class EpisodeJsonParser : BaseJsonParser<Episode>
   {
-    public EpisodeJsonParser(ILogger logger, IConfigurationManager config, IProviderManager providerManager, IFileSystem fileSystem) : base(logger, config, providerManager, fileSystem)
-    {
-    }
+    public EpisodeJsonParser(
+      ILogger logger, IConfigurationManager config,
+      IProviderManager providerManager, IFileSystem fileSystem) :
+      base(logger, config, providerManager, fileSystem) {}
 
     protected override void DeserializeItem(MetadataResult<Episode> metadataResult, string metadataFile, ILogger logger)
     {
@@ -30,55 +31,24 @@ namespace JsonMetadata.Parsers
       {
         using (var reader = JsonReaderWriterFactory.CreateJsonReader(stream, Encoding.UTF8, XmlDictionaryReaderQuotas.Max, null))
         {
-          var settings = new DataContractJsonSerializerSettings();
-          settings.EmitTypeInformation = EmitTypeInformation.Never;
-          settings.DateTimeFormat = new DateTimeFormat("yyyy-MM-dd");
-          var serializer = new DataContractJsonSerializer(typeof(JsonEpisode), settings);
-          var jsonepisode = serializer.ReadObject(reader) as JsonEpisode;
-          item.Name = jsonepisode.title;
-          item.ForcedSortName = jsonepisode.sorttitle;
-          item.ParentIndexNumber = jsonepisode.seasonnumber;
-          item.IndexNumber = jsonepisode.episodenumber;
-          item.CommunityRating = jsonepisode.communityrating;
-          item.Overview = jsonepisode.overview;
-          item.PremiereDate = jsonepisode.releasedate;
-          item.ProductionYear = jsonepisode.year;
+          var json = DeserializeToObject(reader, typeof(JsonEpisode)) as JsonEpisode;
+          item.Name = json.title;
+          item.ForcedSortName = json.sorttitle;
+          item.ParentIndexNumber = json.seasonnumber;
+          item.IndexNumber = json.episodenumber;
+          item.CommunityRating = json.communityrating;
+          item.Overview = json.overview;
+          item.PremiereDate = json.releasedate;
+          item.ProductionYear = json.year;
           // parentalrating
-          item.CustomRating = jsonepisode.customrating;
+          item.CustomRating = json.customrating;
           // originalaspectratio
-          item.SetProviderId(MetadataProviders.Tvdb, jsonepisode.tvdbid);
-          item.IsLocked = jsonepisode.lockdata;
-          item.Genres = jsonepisode.genres;
-          metadataResult.ResetPeople();
-          foreach (var jsonperson in jsonepisode.people)
-          {
-            logger.Log(LogSeverity.Info, $"JsonMetadata: Adding person {jsonperson.name}");
-            var person = new PersonInfo()
-            {
-              Name = jsonperson.name,
-              Type = (PersonType)Enum.Parse(typeof(PersonType), jsonperson.type),
-              Role = jsonperson.role != null ? jsonperson.role : string.Empty,
-            };
-            if (!string.IsNullOrEmpty(jsonperson.thumb))
-            {
-              logger.Log(LogSeverity.Info, $"JsonMetadata: Adding person thumb {jsonperson.thumb}");
-              var primary = new ItemImageInfo()
-              {
-                Path = jsonperson.thumb,
-                Type = ImageType.Primary,
-                Orientation = null,
-                Height = 0,
-                Width = 0,
-                DateModified = File.GetLastWriteTimeUtc(jsonperson.thumb),
-              };
-              person.ImageInfos = new ItemImageInfo[] {primary};
-            }
-            person.SetProviderId(MetadataProviders.Tmdb, jsonperson.tmdbid);
-            person.SetProviderId(MetadataProviders.Imdb, jsonperson.imdbid);
-            metadataResult.AddPerson(person);
-          }
-          item.Studios = jsonepisode.studios;
-          item.Tags = jsonepisode.tags;
+          item.SetProviderId(MetadataProviders.Tvdb, json.tvdbid);
+          item.IsLocked = json.lockdata;
+          item.Genres = json.genres;
+          AddPeople(metadataResult, json.people);
+          item.Studios = json.studios;
+          item.Tags = json.tags;
         }
       }
     }

@@ -18,9 +18,10 @@ namespace JsonMetadata.Parsers
 {
   class MovieJsonParser : BaseJsonParser<Movie>
   {
-    public MovieJsonParser(ILogger logger, IConfigurationManager config, IProviderManager providerManager, IFileSystem fileSystem) : base(logger, config, providerManager, fileSystem)
-    {
-    }
+    public MovieJsonParser(
+      ILogger logger, IConfigurationManager config,
+      IProviderManager providerManager, IFileSystem fileSystem) :
+      base(logger, config, providerManager, fileSystem) {}
 
     protected override void DeserializeItem(MetadataResult<Movie> metadataResult, string metadataFile, ILogger logger)
     {
@@ -30,56 +31,29 @@ namespace JsonMetadata.Parsers
       {
         using (var reader = JsonReaderWriterFactory.CreateJsonReader(stream, Encoding.UTF8, XmlDictionaryReaderQuotas.Max, null))
         {
-          var settings = new DataContractJsonSerializerSettings();
-          settings.EmitTypeInformation = EmitTypeInformation.Never;
-          settings.DateTimeFormat = new DateTimeFormat("yyyy-MM-dd");
-          var serializer = new DataContractJsonSerializer(typeof(JsonMovie), settings);
-          var jsonmovie = serializer.ReadObject(reader) as JsonMovie;
-          item.Name = jsonmovie.title;
-          item.OriginalTitle = jsonmovie.originaltitle;
-          item.ForcedSortName = jsonmovie.sorttitle;
+          var json = DeserializeToObject(reader, typeof(JsonMovie)) as JsonMovie;
+          item.Name = json.title;
+          item.OriginalTitle = json.originaltitle;
+          item.ForcedSortName = json.sorttitle;
           // item.DateCreated = new DateTimeOffset(jsonmovie.dateadded);
-          item.CommunityRating = jsonmovie.communityrating;
-          item.CriticRating = jsonmovie.criticrating;
-          item.Tagline = jsonmovie.tagline;
-          item.Overview = jsonmovie.overview;
-          item.PremiereDate = jsonmovie.releasedate;
-          item.ProductionYear = jsonmovie.year;
+          item.CommunityRating = json.communityrating;
+          item.CriticRating = json.criticrating;
+          item.Tagline = json.tagline;
+          item.Overview = json.overview;
+          item.PremiereDate = json.releasedate;
+          item.ProductionYear = json.year;
           // parentalrating
-          item.CustomRating = jsonmovie.customrating;
+          item.CustomRating = json.customrating;
           // originalaspectratio
           // 3dformat
-          item.SetProviderId(MetadataProviders.Imdb, jsonmovie.imdbid);
-          item.SetProviderId(MetadataProviders.Tmdb, jsonmovie.tmdbid);
-          item.SetProviderId(MetadataProviders.TmdbCollection, jsonmovie.tmdbcollectionid);
-          item.IsLocked = jsonmovie.lockdata;
-          item.Genres = jsonmovie.genres;
-          metadataResult.ResetPeople();
-          foreach (var jsonperson in jsonmovie.people)
-          {
-            logger.Log(LogSeverity.Info, $"JsonMetadata: Adding person {jsonperson.name}");
-            var person = new PersonInfo()
-            {
-              Name = jsonperson.name,
-              Type = (PersonType)Enum.Parse(typeof(PersonType), jsonperson.type),
-              Role = jsonperson.role != null ? jsonperson.role : string.Empty
-            };
-            if (!string.IsNullOrEmpty(jsonperson.thumb))
-            {
-              logger.Log(LogSeverity.Info, $"JsonMetadata: Adding person thumb {jsonperson.thumb}");
-              var primary = new ItemImageInfo()
-              {
-                Path = jsonperson.thumb,
-                Type = ImageType.Primary,
-              };
-              person.ImageInfos = new ItemImageInfo[] {primary};
-            }
-            person.SetProviderId(MetadataProviders.Tmdb, jsonperson.tmdbid);
-            person.SetProviderId(MetadataProviders.Imdb, jsonperson.imdbid);
-            metadataResult.AddPerson(person);
-          }
-          item.Studios = jsonmovie.studios;
-          item.Tags = jsonmovie.tags;
+          item.SetProviderId(MetadataProviders.Imdb, json.imdbid);
+          item.SetProviderId(MetadataProviders.Tmdb, json.tmdbid);
+          item.SetProviderId(MetadataProviders.TmdbCollection, json.tmdbcollectionid);
+          item.IsLocked = json.lockdata;
+          item.Genres = json.genres;
+          AddPeople(metadataResult, json.people);
+          item.Studios = json.studios;
+          item.Tags = json.tags;
         }
       }
     }
