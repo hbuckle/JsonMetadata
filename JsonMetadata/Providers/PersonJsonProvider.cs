@@ -37,7 +37,7 @@ namespace JsonMetadata.Providers
       {
         Item = result.Item
       };
-      new PersonJsonParser(_logger, _config, _providerManager, FileSystem).Fetch(tmpItem, path, cancellationToken);
+      new PersonJsonParser(_logger, _config, _providerManager, FileSystem, LibraryManager).Fetch(tmpItem, path, cancellationToken);
 
       result.Item = (Person)tmpItem.Item;
 

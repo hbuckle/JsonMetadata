@@ -34,7 +34,7 @@ namespace JsonMetadata.Providers
       {
         Item = result.Item
       };
-      new MovieJsonParser(_logger, _config, _providerManager, FileSystem).Fetch(tmpItem, path, cancellationToken);
+      new MovieJsonParser(_logger, _config, _providerManager, FileSystem, LibraryManager).Fetch(tmpItem, path, cancellationToken);
 
       result.Item = (Movie)tmpItem.Item;
       result.People = tmpItem.People;
