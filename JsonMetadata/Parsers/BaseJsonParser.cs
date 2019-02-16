@@ -1,5 +1,6 @@
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Extensions;
@@ -29,18 +30,22 @@ namespace JsonMetadata.Parsers
     protected ILogger Logger { get; private set; }
     protected IFileSystem FileSystem { get; private set; }
     protected IProviderManager ProviderManager { get; private set; }
+    protected ILibraryManager LibraryManager { get; private set; }
 
     private readonly IConfigurationManager _config;
     private Dictionary<string, string> _validProviderIds;
 
     public BaseJsonParser(
       ILogger logger, IConfigurationManager config,
-      IProviderManager providerManager, IFileSystem fileSystem)
+      IProviderManager providerManager, IFileSystem fileSystem,
+      ILibraryManager libraryManager
+    )
     {
       this.Logger = logger;
       this._config = config;
       this.ProviderManager = providerManager;
       this.FileSystem = fileSystem;
+      this.LibraryManager = libraryManager;
     }
 
     public void Fetch(MetadataResult<T> metadataResult, string metadataFile, CancellationToken cancellationToken)

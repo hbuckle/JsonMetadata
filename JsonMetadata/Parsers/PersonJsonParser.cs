@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
@@ -19,8 +20,9 @@ namespace JsonMetadata.Parsers
   {
     public PersonJsonParser(
       ILogger logger, IConfigurationManager config,
-      IProviderManager providerManager, IFileSystem fileSystem) :
-      base(logger, config, providerManager, fileSystem) {}
+      IProviderManager providerManager, IFileSystem fileSystem,
+      ILibraryManager libraryManager) :
+      base(logger, config, providerManager, fileSystem, libraryManager) {}
 
     protected override void DeserializeItem(MetadataResult<Person> metadataResult, string metadataFile, ILogger logger)
     {
