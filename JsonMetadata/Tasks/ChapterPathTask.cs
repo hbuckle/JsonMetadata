@@ -73,40 +73,43 @@ namespace JsonMetadata.Tasks
 
     public Task Execute(CancellationToken cancellationToken, IProgress<double> progress)
     {
-      var items = libraryManager.GetItemList(new InternalItemsQuery{HasChapterImages = true});
+      var items = libraryManager.GetItemList(new InternalItemsQuery());
       double count = 1;
       foreach (var item in items) {
         double percent = (count / items.Length) * 100;
         cancellationToken.ThrowIfCancellationRequested();
         progress.Report(percent);
-        var chapterspath = Path.Combine(item.ContainingFolderPath, "Chapters");
-        List<string> chapters;
-        try
+        if (item is Video)
         {
-          chapters = Directory.GetFiles(chapterspath, "*.jpg").ToList();
-          chapters.Sort(
-            (x, y) => 
-              (float.Parse(Path.GetFileNameWithoutExtension(x))).CompareTo(float.Parse(Path.GetFileNameWithoutExtension(y)))
-          );
-        }
-        catch
-        {
-          chapters = new List<string>();
-        }
-        var chapterinfos = new List<ChapterInfo>();
-        var number = 1;
-        foreach (var chapter in chapters) {
-          // logger.Log(LogSeverity.Info, $"JsonMetadata: {chapter}");
-          chapterinfos.Add(new ChapterInfo{
-            ImagePath = chapter,
-            StartPositionTicks = TimeSpan.FromSeconds(double.Parse(Path.GetFileNameWithoutExtension(chapter))).Ticks,
-            Name = $"Chapter {number}",
-            ImageDateModified = new DateTimeOffset(File.GetLastWriteTimeUtc(chapter)),
-          });
-          number++;
-        }
-        if (chapterinfos.Count > 0) {
-          chapterManager.SaveChapters(item.InternalId, chapterinfos);
+          List<string> chapters;
+          try
+          {
+            var chapterspath = Path.Combine(item.ContainingFolderPath, "Chapters");
+            chapters = Directory.GetFiles(chapterspath, "*.jpg").ToList();
+            chapters.Sort(
+              (x, y) => 
+                (float.Parse(Path.GetFileNameWithoutExtension(x))).CompareTo(float.Parse(Path.GetFileNameWithoutExtension(y)))
+            );
+          }
+          catch
+          {
+            chapters = new List<string>();
+          }
+          var chapterinfos = new List<ChapterInfo>();
+          var number = 1;
+          foreach (var chapter in chapters) {
+            chapterinfos.Add(new ChapterInfo{
+              ImagePath = chapter,
+              StartPositionTicks = TimeSpan.FromSeconds(double.Parse(Path.GetFileNameWithoutExtension(chapter))).Ticks,
+              Name = $"Chapter {number}",
+              ImageDateModified = new DateTimeOffset(File.GetLastWriteTimeUtc(chapter)),
+            });
+            number++;
+          }
+          if (chapterinfos.Count > 0) {
+            logger.Log(LogSeverity.Info, $"JsonMetadata: Saving chapters for {item.Name}");
+            chapterManager.SaveChapters(item.InternalId, chapterinfos);
+          }
         }
         count++;
       }
