@@ -53,7 +53,7 @@ namespace JsonMetadata.Savers
         overview = item.Overview ?? string.Empty,
         releasedate = item.PremiereDate.HasValue ? item.PremiereDate.Value.LocalDateTime : new DateTime?(),
         year = item.ProductionYear,
-        parentalrating = item.GetParentalRatingValue(),
+        parentalrating = item.OfficialRating ?? string.Empty,
         customrating = item.CustomRating ?? string.Empty,
         originalaspectratio = hasAspectRatio != null ? hasAspectRatio.AspectRatio : string.Empty,
         imdbid = item.GetProviderId(MetadataProviders.Imdb) ?? string.Empty,

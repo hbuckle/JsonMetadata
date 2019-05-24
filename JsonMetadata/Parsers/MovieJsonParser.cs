@@ -23,7 +23,8 @@ namespace JsonMetadata.Parsers
       ILogger logger, IConfigurationManager config,
       IProviderManager providerManager, IFileSystem fileSystem,
       ILibraryManager libraryManager) :
-      base(logger, config, providerManager, fileSystem, libraryManager) {}
+      base(logger, config, providerManager, fileSystem, libraryManager)
+    { }
 
     protected override void DeserializeItem(MetadataResult<Movie> metadataResult, string metadataFile, ILogger logger)
     {
@@ -44,7 +45,7 @@ namespace JsonMetadata.Parsers
           item.Overview = json.overview;
           item.PremiereDate = json.releasedate;
           item.ProductionYear = json.year;
-          // parentalrating
+          item.OfficialRating = json.parentalrating;
           item.CustomRating = json.customrating;
           // originalaspectratio
           // 3dformat

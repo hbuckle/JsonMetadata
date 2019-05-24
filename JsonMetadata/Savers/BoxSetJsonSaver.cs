@@ -14,7 +14,6 @@ using System.Xml;
 using System.Linq;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
-using MediaBrowser.Model.Xml;
 using JsonMetadata.Configuration;
 using JsonMetadata.Models;
 
@@ -52,7 +51,7 @@ namespace JsonMetadata.Savers
         overview = item.Overview ?? string.Empty,
         releasedate = item.PremiereDate.HasValue ? item.PremiereDate.Value.LocalDateTime : new DateTime?(),
         year = item.ProductionYear,
-        parentalrating = item.GetParentalRatingValue(),
+        parentalrating = item.OfficialRating ?? string.Empty,
         customrating = item.CustomRating ?? string.Empty,
         displayorder = boxset.DisplayOrder ?? string.Empty,
         tmdbid = item.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty,

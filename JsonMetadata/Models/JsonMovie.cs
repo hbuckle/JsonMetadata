@@ -38,7 +38,7 @@ namespace JsonMetadata.Models
     public int? year { get; set; }
 
     [DataMember(Name = "parentalrating", Order = 11)]
-    public int? parentalrating { get; set; }
+    public string parentalrating { get; set; }
 
     [DataMember(Name = "customrating", Order = 12)]
     public string customrating { get; set; }

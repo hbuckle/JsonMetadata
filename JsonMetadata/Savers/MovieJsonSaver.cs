@@ -14,7 +14,6 @@ using System.Xml;
 using System.Linq;
 using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
-using MediaBrowser.Model.Xml;
 using JsonMetadata.Configuration;
 using JsonMetadata.Models;
 
@@ -35,7 +34,7 @@ namespace JsonMetadata.Savers
     {
       var list = new List<string>();
 
-      var isDvd = string.Equals(item.Container, MediaContainer.Dvd, StringComparison.OrdinalIgnoreCase);
+      var isDvd = string.Equals(item.Container, MediaContainer.Dvd.ToString(), StringComparison.OrdinalIgnoreCase);
 
       if (isDvd)
       {
@@ -44,7 +43,7 @@ namespace JsonMetadata.Savers
         list.Add(Path.Combine(path, "VIDEO_TS", "VIDEO_TS.json"));
       }
 
-      if (isDvd || string.Equals(item.Container, MediaContainer.Bluray, StringComparison.OrdinalIgnoreCase))
+      if (isDvd || string.Equals(item.Container, MediaContainer.Bluray.ToString(), StringComparison.OrdinalIgnoreCase))
       {
         var path = item.ContainingFolderPath;
 
@@ -92,7 +91,7 @@ namespace JsonMetadata.Savers
         overview = item.Overview ?? string.Empty,
         releasedate = item.PremiereDate.HasValue ? item.PremiereDate.Value.LocalDateTime : new DateTime?(),
         year = item.ProductionYear,
-        parentalrating = item.GetParentalRatingValue(),
+        parentalrating = item.OfficialRating ?? string.Empty,
         customrating = item.CustomRating ?? string.Empty,
         originalaspectratio = hasAspectRatio != null ? hasAspectRatio.AspectRatio : string.Empty,
         // threedformat

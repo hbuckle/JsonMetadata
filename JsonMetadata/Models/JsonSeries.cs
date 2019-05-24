@@ -47,7 +47,7 @@ namespace JsonMetadata.Models
     public double? runtime { get; set; }
 
     [DataMember(Name = "parentalrating", Order = 414)]
-    public int? parentalrating { get; set; }
+    public string parentalrating { get; set; }
 
     [DataMember(Name = "customrating", Order = 415)]
     public string customrating { get; set; }

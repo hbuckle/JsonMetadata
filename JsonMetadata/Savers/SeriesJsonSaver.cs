@@ -56,7 +56,7 @@ namespace JsonMetadata.Savers
         airdays = series.AirDays.Select(x => x.ToString()).ToList(),
         airtime = series.AirTime ?? string.Empty,
         runtime = item.RunTimeTicks.HasValue ? TimeSpan.FromTicks(item.RunTimeTicks.Value).TotalMinutes : new double?(),
-        parentalrating = item.GetParentalRatingValue(),
+        parentalrating = item.OfficialRating ?? string.Empty,
         customrating = item.CustomRating ?? string.Empty,
         displayorder = series.DisplayOrder ?? string.Empty,
         imdbid = item.GetProviderId(MetadataProviders.Imdb) ?? string.Empty,

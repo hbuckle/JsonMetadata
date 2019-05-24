@@ -23,7 +23,8 @@ namespace JsonMetadata.Parsers
       ILogger logger, IConfigurationManager config,
       IProviderManager providerManager, IFileSystem fileSystem,
       ILibraryManager libraryManager) :
-      base(logger, config, providerManager, fileSystem, libraryManager) {}
+      base(logger, config, providerManager, fileSystem, libraryManager)
+    { }
 
     protected override void DeserializeItem(MetadataResult<Series> metadataResult, string metadataFile, ILogger logger)
     {
@@ -37,7 +38,8 @@ namespace JsonMetadata.Parsers
           item.Name = json.title;
           item.OriginalTitle = json.originaltitle;
           item.ForcedSortName = json.sorttitle;
-          if (!string.IsNullOrEmpty(json.status)) {
+          if (!string.IsNullOrEmpty(json.status))
+          {
             item.Status = (SeriesStatus)Enum.Parse(typeof(SeriesStatus), json.status);
           }
           item.CommunityRating = json.communityrating;
@@ -48,7 +50,7 @@ namespace JsonMetadata.Parsers
           item.AirDays = json.airdays.Select(x => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), x)).ToArray();
           item.AirTime = json.airtime;
           // item.RunTimeTicks = jsonseries.runtime;
-          // parentalrating
+          item.OfficialRating = json.parentalrating;
           item.CustomRating = json.customrating;
           item.DisplayOrder = json.displayorder;
           item.SetProviderId(MetadataProviders.Imdb, json.imdbid);
