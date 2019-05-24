@@ -83,7 +83,8 @@ namespace JsonMetadata.Parsers
 
     protected virtual void DeserializeItem(
       MetadataResult<T> metadataResult, string metadataFile, ILogger logger
-    ) {}
+    )
+    { }
 
     protected Object DeserializeToObject(XmlDictionaryReader reader, Type type)
     {

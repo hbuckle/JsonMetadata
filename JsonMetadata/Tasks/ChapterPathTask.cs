@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Controller.Chapters;
+using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
@@ -20,16 +20,16 @@ namespace JsonMetadata.Tasks
     private ILibraryManager libraryManager;
     private IServerConfigurationManager configurationManager;
     private ILogger logger;
-    private IChapterManager chapterManager;
+    private IItemRepository itemRepository;
     public ChapterPathTask(
       ILibraryManager libraryManager, IServerConfigurationManager configurationManager,
-      ILogger logger, IChapterManager chapterManager
+      ILogger logger, IItemRepository itemRepository
     )
     {
       this.libraryManager = libraryManager;
       this.configurationManager = configurationManager;
       this.logger = logger;
-      this.chapterManager = chapterManager;
+      this.itemRepository = itemRepository;
     }
 
     public bool IsHidden => false;
@@ -66,7 +66,7 @@ namespace JsonMetadata.Tasks
         new TaskTriggerInfo
         {
           Type = TaskTriggerInfo.TriggerInterval,
-          IntervalTicks = TimeSpan.FromDays(7).Ticks
+          IntervalTicks = TimeSpan.FromHours(1).Ticks,
         }
       };
     }
@@ -75,7 +75,8 @@ namespace JsonMetadata.Tasks
     {
       var items = libraryManager.GetItemList(new InternalItemsQuery());
       double count = 1;
-      foreach (var item in items) {
+      foreach (var item in items)
+      {
         double percent = (count / items.Length) * 100;
         cancellationToken.ThrowIfCancellationRequested();
         progress.Report(percent);
@@ -87,7 +88,7 @@ namespace JsonMetadata.Tasks
             var chapterspath = Path.Combine(item.ContainingFolderPath, "Chapters");
             chapters = Directory.GetFiles(chapterspath, "*.jpg").ToList();
             chapters.Sort(
-              (x, y) => 
+              (x, y) =>
                 (float.Parse(Path.GetFileNameWithoutExtension(x))).CompareTo(float.Parse(Path.GetFileNameWithoutExtension(y)))
             );
           }
@@ -97,8 +98,10 @@ namespace JsonMetadata.Tasks
           }
           var chapterinfos = new List<ChapterInfo>();
           var number = 1;
-          foreach (var chapter in chapters) {
-            chapterinfos.Add(new ChapterInfo{
+          foreach (var chapter in chapters)
+          {
+            chapterinfos.Add(new ChapterInfo
+            {
               ImagePath = chapter,
               StartPositionTicks = TimeSpan.FromSeconds(double.Parse(Path.GetFileNameWithoutExtension(chapter))).Ticks,
               Name = $"Chapter {number}",
@@ -106,9 +109,10 @@ namespace JsonMetadata.Tasks
             });
             number++;
           }
-          if (chapterinfos.Count > 0) {
+          if (chapterinfos.Count > 0)
+          {
             logger.Log(LogSeverity.Info, $"JsonMetadata: Saving chapters for {item.Name}");
-            chapterManager.SaveChapters(item.InternalId, chapterinfos);
+            itemRepository.SaveChapters(item.InternalId, chapterinfos);
           }
         }
         count++;

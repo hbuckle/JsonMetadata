@@ -22,7 +22,8 @@ namespace JsonMetadata.Parsers
       ILogger logger, IConfigurationManager config,
       IProviderManager providerManager, IFileSystem fileSystem,
       ILibraryManager libraryManager) :
-      base(logger, config, providerManager, fileSystem, libraryManager) {}
+      base(logger, config, providerManager, fileSystem, libraryManager)
+    { }
 
     protected override void DeserializeItem(MetadataResult<Person> metadataResult, string metadataFile, ILogger logger)
     {
@@ -41,7 +42,7 @@ namespace JsonMetadata.Parsers
           item.Overview = jsonperson.overview;
           item.PremiereDate = jsonperson.birthdate;
           item.ProductionYear = jsonperson.birthyear;
-          item.ProductionLocations = new string[] {jsonperson.placeofbirth};
+          item.ProductionLocations = new string[] { jsonperson.placeofbirth };
           item.EndDate = jsonperson.deathdate;
           item.SetProviderId(MetadataProviders.Imdb, jsonperson.imdbid);
           item.SetProviderId(MetadataProviders.Tmdb, jsonperson.tmdbid);
@@ -52,7 +53,8 @@ namespace JsonMetadata.Parsers
             var exists = item.ImageInfos.FirstOrDefault(i => i.Path == image.path);
             if (exists == null)
             {
-              var fsm = new FileSystemMetadata(){
+              var fsm = new FileSystemMetadata()
+              {
                 FullName = image.path,
                 Exists = true,
               };

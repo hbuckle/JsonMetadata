@@ -60,7 +60,7 @@ namespace JsonMetadata.Tasks
         new TaskTriggerInfo
         {
           Type = TaskTriggerInfo.TriggerInterval,
-          IntervalTicks = TimeSpan.FromDays(7).Ticks
+          IntervalTicks = TimeSpan.FromHours(1).Ticks,
         }
       };
     }
@@ -69,7 +69,8 @@ namespace JsonMetadata.Tasks
     {
       var people = libraryManager.GetPeople(new InternalItemsQuery());
       double count = 1;
-      foreach (var person in people.Items) {
+      foreach (var person in people.Items)
+      {
         double percent = (count / people.TotalRecordCount) * 100;
         cancellationToken.ThrowIfCancellationRequested();
         progress.Report(percent);

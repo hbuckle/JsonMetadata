@@ -163,7 +163,9 @@ namespace JsonMetadata.Savers
         return image.Path;
       }
 
-      return libraryManager.GetPathAfterNetworkSubstitution(image.Path);
+      return libraryManager.GetPathAfterNetworkSubstitution(
+        new ReadOnlySpan<char>(image.Path.ToCharArray()), new LibraryOptions() { }
+      );
     }
   }
 }
