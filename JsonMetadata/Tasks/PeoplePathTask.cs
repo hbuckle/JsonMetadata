@@ -74,10 +74,16 @@ namespace JsonMetadata.Tasks
         double percent = (count / people.TotalRecordCount) * 100;
         cancellationToken.ThrowIfCancellationRequested();
         progress.Report(percent);
-        var id = person.Item1.GetProviderId(MetadataProviders.Tmdb);
-        var letter = person.Item1.Name[0];
+        var personId = person.Item1.GetProviderId(MetadataProviders.Tmdb);
+        var safeName = person.Item1.Name;
+        foreach (var invalidChar in System.IO.Path.GetInvalidFileNameChars())
+        {
+          safeName = safeName.Replace(invalidChar.ToString(), "");
+        }
+        var sortfolder = safeName[0];
+        var personFolder = $"{safeName} ({personId})";
         var basepath = configurationManager.ApplicationPaths.InternalMetadataPath;
-        var path = $"{basepath}\\People\\{letter}\\{person.Item1.Name} ({id})";
+        var path = $"{basepath}\\People\\{sortfolder}\\{personFolder}";
         if (person.Item1.Path != path)
         {
           person.Item1.Path = path;
