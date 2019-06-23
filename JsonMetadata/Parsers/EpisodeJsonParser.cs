@@ -45,7 +45,6 @@ namespace JsonMetadata.Parsers
           item.ProductionYear = json.year;
           item.OfficialRating = json.parentalrating;
           item.CustomRating = json.customrating;
-          // originalaspectratio
           item.SetProviderId(MetadataProviders.Tvdb, json.tvdbid);
           item.IsLocked = json.lockdata;
           item.Genres = json.genres;

@@ -40,8 +40,8 @@ namespace JsonMetadata.Models
     [DataMember(Name = "customrating", Order = 511)]
     public string customrating { get; set; }
 
-    [DataMember(Name = "originalaspectratio", Order = 512)]
-    public string originalaspectratio { get; set; }
+    // [DataMember(Name = "originalaspectratio", Order = 512)]
+    // public string originalaspectratio { get; set; }
 
     // [DataMember(Name = "3dformat", Order = 513)]
     // public string threedformat { get; set; }

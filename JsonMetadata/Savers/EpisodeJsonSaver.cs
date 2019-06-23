@@ -39,7 +39,6 @@ namespace JsonMetadata.Savers
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager)
     {
-      var hasAspectRatio = item as IHasAspectRatio;
       var episode = item as Episode;
       var output = new JsonEpisode()
       {
@@ -55,7 +54,6 @@ namespace JsonMetadata.Savers
         year = item.ProductionYear,
         parentalrating = item.OfficialRating ?? string.Empty,
         customrating = item.CustomRating ?? string.Empty,
-        originalaspectratio = hasAspectRatio != null ? hasAspectRatio.AspectRatio : string.Empty,
         imdbid = item.GetProviderId(MetadataProviders.Imdb) ?? string.Empty,
         tvdbid = item.GetProviderId(MetadataProviders.Tvdb) ?? string.Empty,
         lockdata = item.IsLocked,

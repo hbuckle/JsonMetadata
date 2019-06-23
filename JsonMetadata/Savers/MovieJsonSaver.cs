@@ -77,7 +77,6 @@ namespace JsonMetadata.Savers
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager)
     {
-      var hasAspectRatio = item as IHasAspectRatio;
       var output = new JsonMovie()
       {
         id = item.InternalId,
@@ -93,7 +92,6 @@ namespace JsonMetadata.Savers
         year = item.ProductionYear,
         parentalrating = item.OfficialRating ?? string.Empty,
         customrating = item.CustomRating ?? string.Empty,
-        originalaspectratio = hasAspectRatio != null ? hasAspectRatio.AspectRatio : string.Empty,
         // threedformat
         imdbid = item.GetProviderId(MetadataProviders.Imdb) ?? string.Empty,
         tmdbid = item.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty,
