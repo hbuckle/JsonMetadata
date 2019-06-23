@@ -52,7 +52,7 @@ namespace JsonMetadata.Parsers
           // item.RunTimeTicks = jsonseries.runtime;
           item.OfficialRating = json.parentalrating;
           item.CustomRating = json.customrating;
-          item.DisplayOrder = json.displayorder;
+          item.DisplayOrder = (SeriesDisplayOrder)Enum.Parse(typeof(SeriesDisplayOrder), json.displayorder);
           item.SetProviderId(MetadataProviders.Imdb, json.imdbid);
           item.SetProviderId(MetadataProviders.Tmdb, json.tmdbid);
           item.SetProviderId(MetadataProviders.Tvdb, json.tvdbid);

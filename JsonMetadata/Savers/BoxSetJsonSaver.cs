@@ -53,7 +53,7 @@ namespace JsonMetadata.Savers
         year = item.ProductionYear,
         parentalrating = item.OfficialRating ?? string.Empty,
         customrating = item.CustomRating ?? string.Empty,
-        displayorder = boxset.DisplayOrder ?? string.Empty,
+        displayorder = boxset.DisplayOrder.ToString(),
         tmdbid = item.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty,
         lockdata = item.IsLocked,
       };

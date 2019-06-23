@@ -58,7 +58,7 @@ namespace JsonMetadata.Savers
         runtime = item.RunTimeTicks.HasValue ? TimeSpan.FromTicks(item.RunTimeTicks.Value).TotalMinutes : new double?(),
         parentalrating = item.OfficialRating ?? string.Empty,
         customrating = item.CustomRating ?? string.Empty,
-        displayorder = series.DisplayOrder ?? string.Empty,
+        displayorder = series.DisplayOrder.ToString(),
         imdbid = item.GetProviderId(MetadataProviders.Imdb) ?? string.Empty,
         tmdbid = item.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty,
         tvdbid = item.GetProviderId(MetadataProviders.Tvdb) ?? string.Empty,
