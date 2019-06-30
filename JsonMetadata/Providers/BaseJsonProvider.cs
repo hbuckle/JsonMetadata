@@ -7,42 +7,33 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
 
-namespace JsonMetadata.Providers
-{
+namespace JsonMetadata.Providers {
   public abstract class BaseJsonProvider<T> : ILocalMetadataProvider<T>, IHasItemChangeMonitor
-      where T : BaseItem, new()
-  {
+      where T : BaseItem, new() {
     protected IFileSystem FileSystem;
     protected ILibraryManager LibraryManager;
 
     public Task<MetadataResult<T>> GetMetadata(ItemInfo info,
         IDirectoryService directoryService,
-        CancellationToken cancellationToken)
-    {
+        CancellationToken cancellationToken) {
       var result = new MetadataResult<T>();
 
       var file = GetJsonFile(info, directoryService);
 
-      if (file == null)
-      {
+      if (file == null) {
         return Task.FromResult(result);
       }
 
       var path = file.FullName;
 
-      try
-      {
+      try {
         result.Item = new T();
 
         Fetch(result, path, cancellationToken);
         result.HasMetadata = true;
-      }
-      catch (FileNotFoundException)
-      {
+      } catch (FileNotFoundException) {
         result.HasMetadata = false;
-      }
-      catch (IOException)
-      {
+      } catch (IOException) {
         result.HasMetadata = false;
       }
 
@@ -51,30 +42,25 @@ namespace JsonMetadata.Providers
 
     protected abstract void Fetch(MetadataResult<T> result, string path, CancellationToken cancellationToken);
 
-    protected BaseJsonProvider(IFileSystem fileSystem, ILibraryManager libraryManager)
-    {
+    protected BaseJsonProvider(IFileSystem fileSystem, ILibraryManager libraryManager) {
       FileSystem = fileSystem;
       LibraryManager = libraryManager;
     }
 
     protected abstract FileSystemMetadata GetJsonFile(ItemInfo info, IDirectoryService directoryService);
 
-    public bool HasChanged(BaseItem item, IDirectoryService directoryService)
-    {
+    public bool HasChanged(BaseItem item, IDirectoryService directoryService) {
       var file = GetJsonFile(new ItemInfo(item), directoryService);
 
-      if (file == null)
-      {
+      if (file == null) {
         return false;
       }
 
       return file.Exists && item.IsGreaterThanDateLastSaved(FileSystem.GetLastWriteTimeUtc(file));
     }
 
-    public string Name
-    {
-      get
-      {
+    public string Name {
+      get {
         return BaseJsonSaver.SaverName;
       }
     }

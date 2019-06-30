@@ -1,12 +1,7 @@
-using System;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Xml;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using MediaBrowser.Common.Configuration;
-using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
@@ -15,25 +10,19 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.IO;
 using JsonMetadata.Models;
 
-namespace JsonMetadata.Parsers
-{
-  class EpisodeJsonParser : BaseJsonParser<Episode>
-  {
+namespace JsonMetadata.Parsers {
+  class EpisodeJsonParser : BaseJsonParser<Episode> {
     public EpisodeJsonParser(
       ILogger logger, IConfigurationManager config,
       IProviderManager providerManager, IFileSystem fileSystem,
       ILibraryManager libraryManager) :
-      base(logger, config, providerManager, fileSystem, libraryManager)
-    { }
+      base(logger, config, providerManager, fileSystem, libraryManager) { }
 
-    protected override void DeserializeItem(MetadataResult<Episode> metadataResult, string metadataFile, ILogger logger)
-    {
+    protected override void DeserializeItem(MetadataResult<Episode> metadataResult, string metadataFile, ILogger logger) {
       logger.Log(LogSeverity.Info, $"JsonMetadata: Deserializing {metadataFile}");
       var item = metadataResult.Item;
-      using (var stream = FileSystem.OpenRead(metadataFile))
-      {
-        using (var reader = JsonReaderWriterFactory.CreateJsonReader(stream, Encoding.UTF8, XmlDictionaryReaderQuotas.Max, null))
-        {
+      using (var stream = FileSystem.OpenRead(metadataFile)) {
+        using (var reader = JsonReaderWriterFactory.CreateJsonReader(stream, Encoding.UTF8, XmlDictionaryReaderQuotas.Max, null)) {
           var json = DeserializeToObject(reader, typeof(JsonEpisode)) as JsonEpisode;
           item.Name = json.title;
           item.ForcedSortName = json.sorttitle;

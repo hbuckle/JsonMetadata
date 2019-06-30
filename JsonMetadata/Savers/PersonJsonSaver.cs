@@ -1,50 +1,34 @@
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
-using MediaBrowser.Controller.Entities.Movies;
-using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Serialization;
 using System.Collections.Generic;
-using System.IO;
 using System;
-using System.Linq;
-using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
-using JsonMetadata.Configuration;
 using JsonMetadata.Models;
 
-namespace JsonMetadata.Savers
-{
-  public class PersonJsonSaver : BaseJsonSaver
-  {
-    public PersonJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger)
-    {
+namespace JsonMetadata.Savers {
+  public class PersonJsonSaver : BaseJsonSaver {
+    public PersonJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger) {
     }
-    protected override string GetLocalSavePath(BaseItem item)
-    {
+    protected override string GetLocalSavePath(BaseItem item) {
       var id = item.GetProviderId(MetadataProviders.Tmdb);
       var letter = item.Name[0];
       var basepath = ConfigurationManager.ApplicationPaths.InternalMetadataPath;
       return $"{basepath}\\People\\{letter}\\{item.Name} ({id})\\person.json";
     }
-    public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType)
-    {
-      if (!item.SupportsLocalMetadata)
-      {
+    public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType) {
+      if (!item.SupportsLocalMetadata) {
         return false;
       }
-      if (item is Person)
-      {
+      if (item is Person) {
         return updateType >= MinimumUpdateType;
       }
       return false;
     }
 
-    protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager)
-    {
+    protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager) {
       var output = new JsonPerson()
       {
         id = item.InternalId,
@@ -59,13 +43,11 @@ namespace JsonMetadata.Savers
         lockdata = item.IsLocked,
       };
       output.tags = new List<string>();
-      foreach (var tag in item.Tags)
-      {
+      foreach (var tag in item.Tags) {
         output.tags.Add(tag);
       }
       output.images = new List<JsonImage>();
-      foreach (var image in item.ImageInfos)
-      {
+      foreach (var image in item.ImageInfos) {
         output.images.Add(new JsonImage()
         {
           type = image.Type.ToString() ?? string.Empty,

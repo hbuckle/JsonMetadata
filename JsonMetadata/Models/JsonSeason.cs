@@ -2,11 +2,9 @@ using System;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 
-namespace JsonMetadata.Models
-{
+namespace JsonMetadata.Models {
   [DataContract]
-  public class JsonSeason : JsonObject
-  {
+  public class JsonSeason : JsonObject {
     [DataMember(Name = "title", Order = 601)]
     public string title { get; set; }
 

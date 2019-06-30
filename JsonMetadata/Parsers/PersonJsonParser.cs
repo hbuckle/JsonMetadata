@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -14,25 +13,19 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.IO;
 using JsonMetadata.Models;
 
-namespace JsonMetadata.Parsers
-{
-  class PersonJsonParser : BaseJsonParser<Person>
-  {
+namespace JsonMetadata.Parsers {
+  class PersonJsonParser : BaseJsonParser<Person> {
     public PersonJsonParser(
       ILogger logger, IConfigurationManager config,
       IProviderManager providerManager, IFileSystem fileSystem,
       ILibraryManager libraryManager) :
-      base(logger, config, providerManager, fileSystem, libraryManager)
-    { }
+      base(logger, config, providerManager, fileSystem, libraryManager) { }
 
-    protected override void DeserializeItem(MetadataResult<Person> metadataResult, string metadataFile, ILogger logger)
-    {
+    protected override void DeserializeItem(MetadataResult<Person> metadataResult, string metadataFile, ILogger logger) {
       logger.Log(LogSeverity.Info, $"JsonMetadata: Deserializing {metadataFile}");
       var item = metadataResult.Item;
-      using (var stream = FileSystem.OpenRead(metadataFile))
-      {
-        using (var reader = JsonReaderWriterFactory.CreateJsonReader(stream, Encoding.UTF8, XmlDictionaryReaderQuotas.Max, null))
-        {
+      using (var stream = FileSystem.OpenRead(metadataFile)) {
+        using (var reader = JsonReaderWriterFactory.CreateJsonReader(stream, Encoding.UTF8, XmlDictionaryReaderQuotas.Max, null)) {
           var settings = new DataContractJsonSerializerSettings();
           settings.EmitTypeInformation = EmitTypeInformation.Never;
           settings.DateTimeFormat = new DateTimeFormat("yyyy-MM-dd");
@@ -47,21 +40,17 @@ namespace JsonMetadata.Parsers
           item.SetProviderId(MetadataProviders.Imdb, jsonperson.imdbid);
           item.SetProviderId(MetadataProviders.Tmdb, jsonperson.tmdbid);
           item.IsLocked = jsonperson.lockdata;
-          foreach (var image in jsonperson.images)
-          {
+          foreach (var image in jsonperson.images) {
             var imagetype = (ImageType)Enum.Parse(typeof(ImageType), image.type);
             var exists = item.ImageInfos.FirstOrDefault(i => i.Path == image.path);
-            if (exists == null)
-            {
+            if (exists == null) {
               var fsm = new FileSystemMetadata()
               {
                 FullName = image.path,
                 Exists = true,
               };
               item.AddImage(fsm, imagetype);
-            }
-            else
-            {
+            } else {
               exists.Type = imagetype;
             }
           }

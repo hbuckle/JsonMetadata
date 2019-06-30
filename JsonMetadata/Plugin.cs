@@ -5,50 +5,39 @@ using MediaBrowser.Model.Drawing;
 using MediaBrowser.Model.Plugins;
 using System.Collections.Generic;
 
-namespace JsonMetadata
-{
-  public class Plugin : BasePlugin, IHasThumbImage, IHasWebPages
-  {
+namespace JsonMetadata {
+  public class Plugin : BasePlugin, IHasThumbImage, IHasWebPages {
     private Guid _id = new Guid("4678ee1d-91c7-47c3-9da6-fe48d2695e94");
-    public override Guid Id
-    {
+    public override Guid Id {
       get { return _id; }
     }
 
-    public override string Name
-    {
+    public override string Name {
       get { return StaticName; }
     }
 
-    public static string StaticName
-    {
+    public static string StaticName {
       get { return "Json Metadata"; }
     }
 
-    public override string Description
-    {
-      get
-      {
+    public override string Description {
+      get {
         return "Json metadata support";
       }
     }
 
-    public Stream GetThumbImage()
-    {
+    public Stream GetThumbImage() {
       var type = GetType();
       return type.Assembly.GetManifestResourceStream(type.Namespace + ".thumb.png");
     }
 
-    public ImageFormat ThumbImageFormat
-    {
-      get
-      {
+    public ImageFormat ThumbImageFormat {
+      get {
         return ImageFormat.Png;
       }
     }
 
-    public IEnumerable<PluginPageInfo> GetPages()
-    {
+    public IEnumerable<PluginPageInfo> GetPages() {
       return new[]
       {
         new PluginPageInfo

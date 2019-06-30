@@ -13,44 +13,34 @@ using MediaBrowser.Model.IO;
 using JsonMetadata.Configuration;
 using JsonMetadata.Models;
 
-namespace JsonMetadata.Savers
-{
-  public class MovieJsonSaver : BaseJsonSaver
-  {
-    public MovieJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger)
-    {
+namespace JsonMetadata.Savers {
+  public class MovieJsonSaver : BaseJsonSaver {
+    public MovieJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger) {
     }
-    protected override string GetLocalSavePath(BaseItem item)
-    {
+    protected override string GetLocalSavePath(BaseItem item) {
       var paths = GetMovieSavePaths(new ItemInfo(item), FileSystem);
       return paths.Count == 0 ? null : paths[0];
     }
 
-    public static List<string> GetMovieSavePaths(ItemInfo item, IFileSystem fileSystem)
-    {
+    public static List<string> GetMovieSavePaths(ItemInfo item, IFileSystem fileSystem) {
       var list = new List<string>();
 
       var isDvd = string.Equals(item.Container, MediaContainer.Dvd.ToString(), StringComparison.OrdinalIgnoreCase);
 
-      if (isDvd)
-      {
+      if (isDvd) {
         var path = item.ContainingFolderPath;
 
         list.Add(Path.Combine(path, "VIDEO_TS", "VIDEO_TS.json"));
       }
 
-      if (isDvd || string.Equals(item.Container, MediaContainer.Bluray.ToString(), StringComparison.OrdinalIgnoreCase))
-      {
+      if (isDvd || string.Equals(item.Container, MediaContainer.Bluray.ToString(), StringComparison.OrdinalIgnoreCase)) {
         var path = item.ContainingFolderPath;
 
         list.Add(Path.Combine(path, Path.GetFileName(path) + ".json"));
-      }
-      else
-      {
+      } else {
         list.Add(Path.ChangeExtension(item.Path, ".json"));
 
-        if (!item.IsInMixedFolder)
-        {
+        if (!item.IsInMixedFolder) {
           list.Add(Path.Combine(item.ContainingFolderPath, "movie.json"));
         }
       }
@@ -58,21 +48,17 @@ namespace JsonMetadata.Savers
       return list;
     }
 
-    public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType)
-    {
-      if (!item.SupportsLocalMetadata)
-      {
+    public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType) {
+      if (!item.SupportsLocalMetadata) {
         return false;
       }
-      if (item is Movie)
-      {
+      if (item is Movie) {
         return updateType >= MinimumUpdateType;
       }
       return false;
     }
 
-    protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager)
-    {
+    protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager) {
       var output = new JsonMovie()
       {
         id = item.InternalId,
@@ -103,8 +89,7 @@ namespace JsonMetadata.Savers
         EnableIds = true
       }) : new List<PersonInfo>();
       output.people = new List<JsonCastCrew>();
-      foreach (var person in people)
-      {
+      foreach (var person in people) {
         var personitem = libraryManager.GetItemById(person.Id);
         var image = person.ImageInfos.FirstOrDefault(i => i.Type == ImageType.Primary);
         var jsonperson = new JsonCastCrew();
@@ -114,8 +99,7 @@ namespace JsonMetadata.Savers
         jsonperson.tmdbid = personitem.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty;
         jsonperson.imdbid = personitem.GetProviderId(MetadataProviders.Imdb) ?? string.Empty;
         jsonperson.type = person.Type.ToString();
-        switch (person.Type)
-        {
+        switch (person.Type) {
           case PersonType.Actor:
             jsonperson.role = person.Role ?? string.Empty;
             break;

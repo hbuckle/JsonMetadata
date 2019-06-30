@@ -3,30 +3,19 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Extensions;
 using MediaBrowser.Model.Logging;
-using JsonMetadata.Configuration;
 using JsonMetadata.Models;
-using JsonMetadata.Savers;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
-using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Model.IO;
 
-namespace JsonMetadata.Parsers
-{
+namespace JsonMetadata.Parsers {
   public class BaseJsonParser<T>
-      where T : BaseItem
-  {
+      where T : BaseItem {
     protected ILogger Logger { get; private set; }
     protected IFileSystem FileSystem { get; private set; }
     protected IProviderManager ProviderManager { get; private set; }
@@ -39,8 +28,7 @@ namespace JsonMetadata.Parsers
       ILogger logger, IConfigurationManager config,
       IProviderManager providerManager, IFileSystem fileSystem,
       ILibraryManager libraryManager
-    )
-    {
+    ) {
       this.Logger = logger;
       this._config = config;
       this.ProviderManager = providerManager;
@@ -48,15 +36,12 @@ namespace JsonMetadata.Parsers
       this.LibraryManager = libraryManager;
     }
 
-    public void Fetch(MetadataResult<T> metadataResult, string metadataFile, CancellationToken cancellationToken)
-    {
-      if (metadataResult == null)
-      {
+    public void Fetch(MetadataResult<T> metadataResult, string metadataFile, CancellationToken cancellationToken) {
+      if (metadataResult == null) {
         throw new ArgumentNullException();
       }
 
-      if (string.IsNullOrEmpty(metadataFile))
-      {
+      if (string.IsNullOrEmpty(metadataFile)) {
         throw new ArgumentNullException();
       }
 
@@ -64,11 +49,9 @@ namespace JsonMetadata.Parsers
 
       var idInfos = ProviderManager.GetExternalIdInfos(metadataResult.Item);
 
-      foreach (var info in idInfos)
-      {
+      foreach (var info in idInfos) {
         var id = info.Key + "Id";
-        if (!_validProviderIds.ContainsKey(id))
-        {
+        if (!_validProviderIds.ContainsKey(id)) {
           _validProviderIds.Add(id, info.Key);
         }
       }
@@ -83,11 +66,9 @@ namespace JsonMetadata.Parsers
 
     protected virtual void DeserializeItem(
       MetadataResult<T> metadataResult, string metadataFile, ILogger logger
-    )
-    { }
+    ) { }
 
-    protected Object DeserializeToObject(XmlDictionaryReader reader, Type type)
-    {
+    protected Object DeserializeToObject(XmlDictionaryReader reader, Type type) {
       var settings = new DataContractJsonSerializerSettings();
       settings.EmitTypeInformation = EmitTypeInformation.Never;
       settings.DateTimeFormat = new DateTimeFormat("yyyy-MM-dd");
@@ -95,11 +76,9 @@ namespace JsonMetadata.Parsers
       return serializer.ReadObject(reader);
     }
 
-    protected void AddPeople(MetadataResult<T> metadataResult, List<JsonCastCrew> people)
-    {
+    protected void AddPeople(MetadataResult<T> metadataResult, List<JsonCastCrew> people) {
       metadataResult.ResetPeople();
-      foreach (var jsonperson in people)
-      {
+      foreach (var jsonperson in people) {
         var person = new PersonInfo()
         {
           Name = jsonperson.name,

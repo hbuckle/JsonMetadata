@@ -1,11 +1,9 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace JsonMetadata.Models
-{
+namespace JsonMetadata.Models {
   [DataContract]
-  public class JsonCastCrew : JsonObject
-  {
+  public class JsonCastCrew : JsonObject {
     [DataMember(Name = "name", Order = 201)]
     public string name { get; set; }
 

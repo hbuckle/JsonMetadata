@@ -3,12 +3,10 @@ using System.Runtime.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace JsonMetadata.Models
-{
+namespace JsonMetadata.Models {
   [DataContract]
   [KnownType("KnownTypes")]
-  public class JsonObject
-  {
+  public class JsonObject {
     protected internal JsonObject() { }
 
     [DataMember(Name = "id", Order = 0)]
@@ -17,8 +15,7 @@ namespace JsonMetadata.Models
     [DataMember(Name = "path", Order = 1)]
     public string path { get; set; }
 
-    public static IEnumerable<Type> KnownTypes()
-    {
+    public static IEnumerable<Type> KnownTypes() {
       return from t in typeof(JsonObject).Assembly.GetTypes()
              where typeof(JsonObject).IsAssignableFrom(t)
              select t;

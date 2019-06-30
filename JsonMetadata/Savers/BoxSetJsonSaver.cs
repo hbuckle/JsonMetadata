@@ -2,44 +2,32 @@ using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Library;
-using MediaBrowser.Controller.Providers;
-using MediaBrowser.Model.Collections;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Model.Serialization;
 using System.Collections.Generic;
 using System.IO;
 using System;
-using System.Xml;
 using System.Linq;
-using MediaBrowser.Controller.IO;
 using MediaBrowser.Model.IO;
 using JsonMetadata.Configuration;
 using JsonMetadata.Models;
 
-namespace JsonMetadata.Savers
-{
-  public class BoxSetJsonSaver : BaseJsonSaver
-  {
-    public BoxSetJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger)
-    {
+namespace JsonMetadata.Savers {
+  public class BoxSetJsonSaver : BaseJsonSaver {
+    public BoxSetJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger) {
     }
-    protected override string GetLocalSavePath(BaseItem item)
-    {
+    protected override string GetLocalSavePath(BaseItem item) {
       return Path.Combine(item.Path, "collection.json");
     }
 
-    public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType)
-    {
-      if (!item.SupportsLocalMetadata)
-      {
+    public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType) {
+      if (!item.SupportsLocalMetadata) {
         return false;
       }
       return item is BoxSet && updateType >= MinimumUpdateType;
     }
 
-    protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager)
-    {
+    protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager) {
       var boxset = item as BoxSet;
       var output = new JsonBoxSet()
       {
@@ -66,8 +54,7 @@ namespace JsonMetadata.Savers
         EnableIds = true
       }) : new List<PersonInfo>();
       output.people = new List<JsonCastCrew>();
-      foreach (var person in people)
-      {
+      foreach (var person in people) {
         var personitem = libraryManager.GetItemById(person.Id);
         var image = person.ImageInfos.FirstOrDefault(i => i.Type == ImageType.Primary);
         var jsonperson = new JsonCastCrew();
@@ -77,8 +64,7 @@ namespace JsonMetadata.Savers
         jsonperson.tmdbid = personitem.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty;
         jsonperson.imdbid = personitem.GetProviderId(MetadataProviders.Imdb) ?? string.Empty;
         jsonperson.type = person.Type.ToString();
-        switch (person.Type)
-        {
+        switch (person.Type) {
           case PersonType.Actor:
             jsonperson.role = person.Role ?? string.Empty;
             break;
@@ -92,8 +78,7 @@ namespace JsonMetadata.Savers
       output.tags = item.Tags;
       var children = boxset.GetItemList(new InternalItemsQuery());
       output.collectionitems = new List<JsonObject>();
-      foreach (var child in children)
-      {
+      foreach (var child in children) {
         output.collectionitems.Add(new JsonObject()
         {
           id = child.InternalId,
