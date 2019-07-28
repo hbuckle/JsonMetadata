@@ -75,7 +75,9 @@ namespace JsonMetadata.Tasks {
           List<string> chapters;
           try {
             string chapterspath;
-            if (item is Movie) {
+            if (item is Trailer) {
+              continue;
+            } else if (item is Movie) {
               chapterspath = Path.Combine(item.ContainingFolderPath, "Chapters");
             } else if (item is Episode) {
               chapterspath = Path.Combine(item.ContainingFolderPath, "Chapters", item.FileNameWithoutExtension);
