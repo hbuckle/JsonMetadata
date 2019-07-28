@@ -14,16 +14,7 @@ using System.Xml;
 using MediaBrowser.Model.IO;
 
 namespace JsonMetadata.Parsers {
-  public class BaseJsonParser<T>
-      where T : BaseItem {
-    protected ILogger Logger { get; private set; }
-    protected IFileSystem FileSystem { get; private set; }
-    protected IProviderManager ProviderManager { get; private set; }
-    protected ILibraryManager LibraryManager { get; private set; }
-
-    private readonly IConfigurationManager _config;
-    private Dictionary<string, string> _validProviderIds;
-
+  public class BaseJsonParser<T> where T : BaseItem {
     public BaseJsonParser(
       ILogger logger, IConfigurationManager config,
       IProviderManager providerManager, IFileSystem fileSystem,
@@ -35,6 +26,14 @@ namespace JsonMetadata.Parsers {
       this.FileSystem = fileSystem;
       this.LibraryManager = libraryManager;
     }
+
+    protected ILogger Logger { get; private set; }
+    protected IFileSystem FileSystem { get; private set; }
+    protected IProviderManager ProviderManager { get; private set; }
+    protected ILibraryManager LibraryManager { get; private set; }
+
+    private readonly IConfigurationManager _config;
+    private Dictionary<string, string> _validProviderIds;
 
     public void Fetch(MetadataResult<T> metadataResult, string metadataFile, CancellationToken cancellationToken) {
       if (metadataResult == null) {

@@ -15,8 +15,11 @@ namespace JsonMetadata.Parsers {
     public EpisodeJsonParser(
       ILogger logger, IConfigurationManager config,
       IProviderManager providerManager, IFileSystem fileSystem,
-      ILibraryManager libraryManager) :
-      base(logger, config, providerManager, fileSystem, libraryManager) { }
+      ILibraryManager libraryManager
+    ) : base(
+      logger, config, providerManager,
+      fileSystem, libraryManager
+    ) { }
 
     protected override void DeserializeItem(MetadataResult<Episode> metadataResult, string metadataFile, ILogger logger) {
       logger.Log(LogSeverity.Info, $"JsonMetadata: Deserializing {metadataFile}");

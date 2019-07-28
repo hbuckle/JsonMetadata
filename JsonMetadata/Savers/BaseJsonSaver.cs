@@ -15,7 +15,11 @@ using MediaBrowser.Model.IO;
 
 namespace JsonMetadata.Savers {
   public abstract class BaseJsonSaver : IMetadataFileSaver {
-    protected BaseJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) {
+    protected BaseJsonSaver(
+      IFileSystem fileSystem, IServerConfigurationManager configurationManager,
+      ILibraryManager libraryManager, IUserManager userManager,
+      IUserDataManager userDataManager, ILogger logger
+    ) {
       Logger = logger;
       UserDataManager = userDataManager;
       UserManager = userManager;

@@ -14,8 +14,14 @@ using JsonMetadata.Models;
 
 namespace JsonMetadata.Savers {
   public class EpisodeJsonSaver : BaseJsonSaver {
-    public EpisodeJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger) {
-    }
+    public EpisodeJsonSaver(
+      IFileSystem fileSystem, IServerConfigurationManager configurationManager,
+      ILibraryManager libraryManager, IUserManager userManager,
+      IUserDataManager userDataManager, ILogger logger
+    ) : base(
+      fileSystem, configurationManager, libraryManager,
+      userManager, userDataManager, logger
+    ) { }
 
     protected override string GetLocalSavePath(BaseItem item) {
       return Path.ChangeExtension(item.Path, ".json");

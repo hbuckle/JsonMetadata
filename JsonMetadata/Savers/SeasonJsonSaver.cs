@@ -14,8 +14,14 @@ using JsonMetadata.Models;
 
 namespace JsonMetadata.Savers {
   public class SeasonJsonSaver : BaseJsonSaver {
-    public SeasonJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger) {
-    }
+    public SeasonJsonSaver(
+      IFileSystem fileSystem, IServerConfigurationManager configurationManager,
+      ILibraryManager libraryManager, IUserManager userManager,
+      IUserDataManager userDataManager, ILogger logger
+    ) : base(
+      fileSystem, configurationManager, libraryManager,
+      userManager, userDataManager, logger
+    ) { }
 
     protected override string GetLocalSavePath(BaseItem item) {
       return Path.Combine(item.Path, "season.json");

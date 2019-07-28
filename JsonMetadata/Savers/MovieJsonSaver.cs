@@ -15,8 +15,15 @@ using JsonMetadata.Models;
 
 namespace JsonMetadata.Savers {
   public class MovieJsonSaver : BaseJsonSaver {
-    public MovieJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger) {
-    }
+    public MovieJsonSaver(
+      IFileSystem fileSystem, IServerConfigurationManager configurationManager,
+      ILibraryManager libraryManager, IUserManager userManager,
+      IUserDataManager userDataManager, ILogger logger
+    ) : base(
+      fileSystem, configurationManager, libraryManager,
+      userManager, userDataManager, logger
+    ) { }
+
     protected override string GetLocalSavePath(BaseItem item) {
       var paths = GetMovieSavePaths(new ItemInfo(item), FileSystem);
       return paths.Count == 0 ? null : paths[0];

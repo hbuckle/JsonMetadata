@@ -10,8 +10,15 @@ using JsonMetadata.Models;
 
 namespace JsonMetadata.Savers {
   public class PersonJsonSaver : BaseJsonSaver {
-    public PersonJsonSaver(IFileSystem fileSystem, IServerConfigurationManager configurationManager, ILibraryManager libraryManager, IUserManager userManager, IUserDataManager userDataManager, ILogger logger) : base(fileSystem, configurationManager, libraryManager, userManager, userDataManager, logger) {
-    }
+    public PersonJsonSaver(
+      IFileSystem fileSystem, IServerConfigurationManager configurationManager,
+      ILibraryManager libraryManager, IUserManager userManager,
+      IUserDataManager userDataManager, ILogger logger
+    ) : base(
+      fileSystem, configurationManager, libraryManager,
+      userManager, userDataManager, logger
+    ) { }
+
     protected override string GetLocalSavePath(BaseItem item) {
       var id = item.GetProviderId(MetadataProviders.Tmdb);
       var letter = item.Name[0];
