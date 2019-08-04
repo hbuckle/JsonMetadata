@@ -65,7 +65,9 @@ namespace JsonMetadata.Tasks {
     }
 
     public Task Execute(CancellationToken cancellationToken, IProgress<double> progress) {
-      var items = libraryManager.GetItemList(new InternalItemsQuery());
+      var items = libraryManager.GetItemList(new InternalItemsQuery()
+      { IncludeItemTypes = new string[] { "Video" } }
+      );
       double count = 1;
       foreach (var item in items) {
         double percent = (count / items.Length) * 100;

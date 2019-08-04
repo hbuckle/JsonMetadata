@@ -92,6 +92,9 @@ namespace JsonMetadata.Savers {
           path = child.Path,
         });
       }
+      output.collectionitems.Sort(delegate (JsonObject x, JsonObject y) {
+        return x.path.CompareTo(y.path);
+      });
       return output;
     }
   }
