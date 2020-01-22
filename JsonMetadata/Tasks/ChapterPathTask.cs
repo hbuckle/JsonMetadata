@@ -65,9 +65,7 @@ namespace JsonMetadata.Tasks {
     }
 
     public Task Execute(CancellationToken cancellationToken, IProgress<double> progress) {
-      var items = libraryManager.GetItemList(new InternalItemsQuery()
-      { IncludeItemTypes = new string[] { "Video" } }
-      );
+      var items = libraryManager.GetItemList(new InternalItemsQuery());
       double count = 1;
       foreach (var item in items) {
         double percent = (count / items.Length) * 100;
@@ -77,14 +75,11 @@ namespace JsonMetadata.Tasks {
           List<string> chapters;
           try {
             string chapterspath;
-            if (item is Trailer) {
-              continue;
-            } else if (item is Movie) {
+            if (item is Movie) {
               chapterspath = Path.Combine(item.ContainingFolderPath, "Chapters");
             } else if (item is Episode) {
               chapterspath = Path.Combine(item.ContainingFolderPath, "Chapters", item.FileNameWithoutExtension);
             } else {
-              logger.Log(LogSeverity.Info, $"JsonMetadata: Unsupported media type {item.GetType().ToString()}");
               continue;
             }
             chapters = Directory.GetFiles(chapterspath, "*.jpg").ToList();
