@@ -48,12 +48,9 @@ namespace JsonMetadata.Savers {
         imdbid = item.GetProviderId(MetadataProviders.Imdb) ?? string.Empty,
         tmdbid = item.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty,
         lockdata = item.IsLocked,
+        tags = item.Tags,
+        images = new List<JsonImage>(),
       };
-      output.tags = new List<string>();
-      foreach (var tag in item.Tags) {
-        output.tags.Add(tag);
-      }
-      output.images = new List<JsonImage>();
       foreach (var image in item.ImageInfos) {
         output.images.Add(new JsonImage()
         {

@@ -3,15 +3,14 @@ using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
 using JsonMetadata.Models;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading;
-using System.Xml;
-using MediaBrowser.Model.IO;
 
 namespace JsonMetadata.Parsers {
   public class BaseJsonParser<T> where T : BaseItem {
@@ -67,12 +66,12 @@ namespace JsonMetadata.Parsers {
       MetadataResult<T> metadataResult, string metadataFile, ILogger logger
     ) { }
 
-    protected Object DeserializeToObject(XmlDictionaryReader reader, Type type) {
-      var settings = new DataContractJsonSerializerSettings();
-      settings.EmitTypeInformation = EmitTypeInformation.Never;
-      settings.DateTimeFormat = new DateTimeFormat("yyyy-MM-dd");
-      var serializer = new DataContractJsonSerializer(type, settings);
-      return serializer.ReadObject(reader);
+    protected Object DeserializeToObject(string path, Type type) {
+      var json = System.IO.File.ReadAllBytes(path);
+      var options = new JsonSerializerOptions();
+      options.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+      options.Converters.Add(new DateTimeConverter("yyyy-MM-dd"));
+      return JsonSerializer.Deserialize(json, type, options);
     }
 
     protected void AddPeople(MetadataResult<T> metadataResult, List<JsonCastCrew> people) {

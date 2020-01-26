@@ -4,12 +4,10 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
-using System.Collections.Generic;
 using System.IO;
 using System;
 using System.Linq;
 using MediaBrowser.Model.IO;
-using JsonMetadata.Configuration;
 using JsonMetadata.Models;
 
 namespace JsonMetadata.Savers {
@@ -59,39 +57,12 @@ namespace JsonMetadata.Savers {
         tmdbid = item.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty,
         tvdbid = item.GetProviderId(MetadataProviders.Tvdb) ?? string.Empty,
         zap2itid = item.GetProviderId(MetadataProviders.Zap2It) ?? string.Empty,
-        lockdata = item.IsLocked
+        lockdata = item.IsLocked,
+        genres = item.Genres,
+        studios = item.Studios,
+        tags = item.Tags,
       };
-      output.genres = item.Genres;
-      var people = item.SupportsPeople ? libraryManager.GetItemPeople(new InternalPeopleQuery
-      {
-        ItemIds = new[] { item.InternalId },
-        EnableImages = options.GetJsonConfiguration().SaveImagePathsInNfo,
-        EnableGuids = true,
-        EnableIds = true
-      }) : new List<PersonInfo>();
-      output.people = new List<JsonCastCrew>();
-      foreach (var person in people) {
-        var personitem = libraryManager.GetItemById(person.Id);
-        var image = person.ImageInfos.FirstOrDefault(i => i.Type == ImageType.Primary);
-        var jsonperson = new JsonCastCrew();
-        jsonperson.thumb = image != null ? GetImagePathToSave(image, libraryManager, options) : string.Empty;
-        jsonperson.name = person.Name ?? string.Empty;
-        jsonperson.id = person.Id;
-        jsonperson.tmdbid = personitem.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty;
-        jsonperson.imdbid = personitem.GetProviderId(MetadataProviders.Imdb) ?? string.Empty;
-        jsonperson.type = person.Type.ToString();
-        switch (person.Type) {
-          case PersonType.Actor:
-            jsonperson.role = person.Role ?? string.Empty;
-            break;
-          default:
-            jsonperson.role = string.Empty;
-            break;
-        }
-        output.people.Add(jsonperson);
-      }
-      output.studios = item.Studios;
-      output.tags = item.Tags;
+      AddPeople(item, output, libraryManager);
       return output;
     }
   }

@@ -2,15 +2,16 @@ using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Configuration;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using JsonMetadata.Configuration;
 using JsonMetadata.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Linq;
+using System.Text.Json;
 using System.Threading;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
 using MediaBrowser.Model.IO;
 
 namespace JsonMetadata.Savers {
@@ -40,7 +41,6 @@ namespace JsonMetadata.Savers {
         if (ConfigurationManager.GetJsonConfiguration().SaveImagePathsInNfo) {
           return ItemUpdateType.ImageUpdate;
         }
-
         return ItemUpdateType.MetadataDownload;
       }
     }
@@ -60,67 +60,23 @@ namespace JsonMetadata.Savers {
     public string GetSavePath(BaseItem item) {
       return GetLocalSavePath(item);
     }
-
-    /// <summary>
-    /// Gets the save path.
-    /// </summary>
-    /// <param name="item">The item.</param>
-    /// <returns>System.String.</returns>
     protected abstract string GetLocalSavePath(BaseItem item);
 
-    /// <summary>
-    /// Determines whether [is enabled for] [the specified item].
-    /// </summary>
-    /// <param name="item">The item.</param>
-    /// <param name="updateType">Type of the update.</param>
-    /// <returns><c>true</c> if [is enabled for] [the specified item]; otherwise, <c>false</c>.</returns>
     public abstract bool IsEnabledFor(BaseItem item, ItemUpdateType updateType);
 
     public void Save(BaseItem item, CancellationToken cancellationToken) {
       var path = GetSavePath(item);
-      using (var memoryStream = new MemoryStream()) {
-        Save(item, memoryStream);
-
-        memoryStream.Position = 0;
-
-        cancellationToken.ThrowIfCancellationRequested();
-
-        SaveToFile(memoryStream, path);
-      }
-    }
-
-    private void SaveToFile(Stream stream, string path) {
-      FileSystem.CreateDirectory(FileSystem.GetDirectoryName(path));
-      // On Windows, saving the file will fail if the file is hidden or readonly
-      FileSystem.SetAttributes(path, false, false);
-
-      using (var filestream = FileSystem.GetFileStream(path, FileOpenMode.Create, FileAccessMode.Write, FileShareMode.Read)) {
-        stream.CopyTo(filestream);
-      }
-
-      if (ConfigurationManager.Configuration.SaveMetadataHidden) {
-        SetHidden(path, true);
-      }
-    }
-
-    private void SetHidden(string path, bool hidden) {
-      try {
-        FileSystem.SetHidden(path, hidden);
-      } catch (Exception ex) {
-        Logger.Error("Error setting hidden attribute on {0} - {1}", path, ex.Message);
-      }
-    }
-
-    private void Save(BaseItem item, Stream stream) {
-      var options = ConfigurationManager.GetJsonConfiguration();
       var serializeditem = SerializeItem(item, ConfigurationManager, LibraryManager);
-      using (var writer = JsonReaderWriterFactory.CreateJsonWriter(stream, Encoding.UTF8, false, true, "  ")) {
-        var settings = new DataContractJsonSerializerSettings();
-        settings.EmitTypeInformation = EmitTypeInformation.Never;
-        settings.DateTimeFormat = new DateTimeFormat("yyyy-MM-dd");
-        var serializer = new DataContractJsonSerializer(typeof(JsonObject), settings);
-        serializer.WriteObject(writer, serializeditem);
-      }
+      var options = new JsonSerializerOptions
+      {
+        WriteIndented = true,
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+      };
+      options.Converters.Add(new DateTimeConverter("yyyy-MM-dd"));
+      var json = JsonSerializer.Serialize(serializeditem, serializeditem.GetType(), options);
+      FileSystem.CreateDirectory(FileSystem.GetDirectoryName(path));
+      FileSystem.SetAttributes(path, false, false);
+      File.WriteAllText(path, json);
     }
 
     protected abstract JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager);
@@ -133,6 +89,56 @@ namespace JsonMetadata.Savers {
       return libraryManager.GetPathAfterNetworkSubstitution(
         new ReadOnlySpan<char>(image.Path.ToCharArray()), new LibraryOptions() { }
       );
+    }
+
+    protected void AddPeople(BaseItem item, JsonObject output, ILibraryManager libraryManager) {
+      if (!item.SupportsPeople) { return; }
+      var people = libraryManager.GetItemPeople(new InternalPeopleQuery
+      {
+        ItemIds = new[] { item.InternalId },
+        EnableImages = true,
+        EnableGuids = true,
+        EnableIds = true
+      });
+      var outpeople = new List<JsonCastCrew>();
+      foreach (var person in people) {
+        var personitem = libraryManager.GetItemById(person.Id);
+        var image = person.ImageInfos.FirstOrDefault(i => i.Type == ImageType.Primary);
+        var jsonperson = new JsonCastCrew();
+        jsonperson.name = person.Name ?? string.Empty;
+        jsonperson.id = person.Id;
+        jsonperson.tmdbid = personitem.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty;
+        jsonperson.imdbid = personitem.GetProviderId(MetadataProviders.Imdb) ?? string.Empty;
+        jsonperson.type = person.Type.ToString();
+        jsonperson.path = personitem.Path;
+        switch (person.Type) {
+          case PersonType.Actor:
+            jsonperson.role = person.Role ?? string.Empty;
+            outpeople.Add(jsonperson);
+            break;
+          case PersonType.Director:
+            jsonperson.role = string.Empty;
+            outpeople.Insert(0, jsonperson);
+            break;
+          default:
+            break;
+        }
+      }
+      if (output is JsonBoxSet) {
+        ((JsonBoxSet)output).people = outpeople;
+      }
+      if (output is JsonEpisode) {
+        ((JsonEpisode)output).people = outpeople;
+      }
+      if (output is JsonMovie) {
+        ((JsonMovie)output).people = outpeople;
+      }
+      if (output is JsonSeason) {
+        ((JsonSeason)output).people = outpeople;
+      }
+      if (output is JsonSeries) {
+        ((JsonSeries)output).people = outpeople;
+      }
     }
   }
 }

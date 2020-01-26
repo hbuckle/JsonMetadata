@@ -27,39 +27,31 @@ namespace JsonMetadata.Parsers {
     protected override void DeserializeItem(MetadataResult<Person> metadataResult, string metadataFile, ILogger logger) {
       logger.Log(LogSeverity.Info, $"JsonMetadata: Deserializing {metadataFile}");
       var item = metadataResult.Item;
-      using (var stream = FileSystem.OpenRead(metadataFile)) {
-        using (var reader = JsonReaderWriterFactory.CreateJsonReader(stream, Encoding.UTF8, XmlDictionaryReaderQuotas.Max, null)) {
-          var settings = new DataContractJsonSerializerSettings();
-          settings.EmitTypeInformation = EmitTypeInformation.Never;
-          settings.DateTimeFormat = new DateTimeFormat("yyyy-MM-dd");
-          var serializer = new DataContractJsonSerializer(typeof(JsonPerson), settings);
-          var jsonperson = serializer.ReadObject(reader) as JsonPerson;
-          item.Name = jsonperson.name;
-          item.Overview = jsonperson.overview;
-          item.PremiereDate = jsonperson.birthdate;
-          item.ProductionYear = jsonperson.birthyear;
-          item.ProductionLocations = new string[] { jsonperson.placeofbirth };
-          item.EndDate = jsonperson.deathdate;
-          item.SetProviderId(MetadataProviders.Imdb, jsonperson.imdbid);
-          item.SetProviderId(MetadataProviders.Tmdb, jsonperson.tmdbid);
-          item.IsLocked = jsonperson.lockdata;
-          foreach (var image in jsonperson.images) {
-            var imagetype = (ImageType)Enum.Parse(typeof(ImageType), image.type);
-            var exists = item.ImageInfos.FirstOrDefault(i => i.Path == image.path);
-            if (exists == null) {
-              var fsm = new FileSystemMetadata()
-              {
-                FullName = image.path,
-                Exists = true,
-              };
-              item.AddImage(fsm, imagetype);
-            } else {
-              exists.Type = imagetype;
-            }
-          }
-          item.Tags = jsonperson.tags.ToArray();
+      var json = DeserializeToObject(item.Path, typeof(JsonPerson)) as JsonPerson;
+      item.Name = json.name;
+      item.Overview = json.overview;
+      item.PremiereDate = json.birthdate;
+      item.ProductionYear = json.birthyear;
+      item.ProductionLocations = new string[] { json.placeofbirth };
+      item.EndDate = json.deathdate;
+      item.SetProviderId(MetadataProviders.Imdb, json.imdbid);
+      item.SetProviderId(MetadataProviders.Tmdb, json.tmdbid);
+      item.IsLocked = json.lockdata;
+      foreach (var image in json.images) {
+        var imagetype = (ImageType)Enum.Parse(typeof(ImageType), image.type);
+        var exists = item.ImageInfos.FirstOrDefault(i => i.Path == image.path);
+        if (exists == null) {
+          var fsm = new FileSystemMetadata()
+          {
+            FullName = image.path,
+            Exists = true,
+          };
+          item.AddImage(fsm, imagetype);
+        } else {
+          exists.Type = imagetype;
         }
       }
+      item.Tags = json.tags;
     }
   }
 }

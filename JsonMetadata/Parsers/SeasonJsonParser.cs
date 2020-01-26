@@ -1,6 +1,3 @@
-using System.Text;
-using System.Xml;
-using System.Runtime.Serialization.Json;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
@@ -24,26 +21,22 @@ namespace JsonMetadata.Parsers {
     protected override void DeserializeItem(MetadataResult<Season> metadataResult, string metadataFile, ILogger logger) {
       logger.Log(LogSeverity.Info, $"JsonMetadata: Deserializing {metadataFile}");
       var item = metadataResult.Item;
-      using (var stream = FileSystem.OpenRead(metadataFile)) {
-        using (var reader = JsonReaderWriterFactory.CreateJsonReader(stream, Encoding.UTF8, XmlDictionaryReaderQuotas.Max, null)) {
-          var json = DeserializeToObject(reader, typeof(JsonSeason)) as JsonSeason;
-          item.Name = json.title;
-          item.ForcedSortName = json.sorttitle;
-          item.IndexNumber = json.seasonnumber;
-          item.CommunityRating = json.communityrating;
-          item.Overview = json.overview;
-          item.PremiereDate = json.releasedate;
-          item.ProductionYear = json.year;
-          item.OfficialRating = json.parentalrating;
-          item.CustomRating = json.customrating;
-          item.SetProviderId(MetadataProviders.Tvdb, json.tvdbid);
-          item.Genres = json.genres;
-          AddPeople(metadataResult, json.people);
-          item.Studios = json.studios;
-          item.Tags = json.tags;
-          item.IsLocked = json.lockdata;
-        }
-      }
+      var json = DeserializeToObject(item.Path, typeof(JsonSeason)) as JsonSeason;
+      item.Name = json.title;
+      item.ForcedSortName = json.sorttitle;
+      item.IndexNumber = json.seasonnumber;
+      item.CommunityRating = json.communityrating;
+      item.Overview = json.overview;
+      item.PremiereDate = json.releasedate;
+      item.ProductionYear = json.year;
+      item.OfficialRating = json.parentalrating;
+      item.CustomRating = json.customrating;
+      item.SetProviderId(MetadataProviders.Tvdb, json.tvdbid);
+      item.Genres = json.genres;
+      AddPeople(metadataResult, json.people);
+      item.Studios = json.studios;
+      item.Tags = json.tags;
+      item.IsLocked = json.lockdata;
     }
   }
 }

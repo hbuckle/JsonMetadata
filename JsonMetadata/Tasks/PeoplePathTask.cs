@@ -47,7 +47,7 @@ namespace JsonMetadata.Tasks {
 
     public IEnumerable<TaskTriggerInfo> GetDefaultTriggers() {
       return new[]
-      { 
+      {
         // Every so often
         new TaskTriggerInfo
         {
@@ -66,6 +66,7 @@ namespace JsonMetadata.Tasks {
         progress.Report(percent);
         var personId = person.Item1.GetProviderId(MetadataProviders.Tmdb);
         var safeName = person.Item1.Name;
+        safeName = safeName.Replace(":", ";");
         foreach (var invalidChar in System.IO.Path.GetInvalidFileNameChars()) {
           safeName = safeName.Replace(invalidChar.ToString(), "");
         }
