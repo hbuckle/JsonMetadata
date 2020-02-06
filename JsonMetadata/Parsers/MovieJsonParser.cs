@@ -21,7 +21,7 @@ namespace JsonMetadata.Parsers {
     protected override void DeserializeItem(MetadataResult<Movie> metadataResult, string metadataFile, ILogger logger) {
       logger.Log(LogSeverity.Info, $"JsonMetadata: Deserializing {metadataFile}");
       var item = metadataResult.Item;
-      var json = DeserializeToObject(item.Path, typeof(JsonMovie)) as JsonMovie;
+      var json = DeserializeToObject(metadataFile, typeof(JsonMovie)) as JsonMovie;
       item.Name = json.title;
       item.OriginalTitle = json.originaltitle;
       item.ForcedSortName = json.sorttitle;

@@ -23,7 +23,7 @@ namespace JsonMetadata.Parsers {
     protected override void DeserializeItem(MetadataResult<Series> metadataResult, string metadataFile, ILogger logger) {
       logger.Log(LogSeverity.Info, $"JsonMetadata: Deserializing {metadataFile}");
       var item = metadataResult.Item;
-      var json = DeserializeToObject(item.Path, typeof(JsonSeries)) as JsonSeries;
+      var json = DeserializeToObject(metadataFile, typeof(JsonSeries)) as JsonSeries;
       item.Name = json.title;
       item.OriginalTitle = json.originaltitle;
       item.ForcedSortName = json.sorttitle;

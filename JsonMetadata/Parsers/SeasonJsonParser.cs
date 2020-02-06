@@ -21,7 +21,7 @@ namespace JsonMetadata.Parsers {
     protected override void DeserializeItem(MetadataResult<Season> metadataResult, string metadataFile, ILogger logger) {
       logger.Log(LogSeverity.Info, $"JsonMetadata: Deserializing {metadataFile}");
       var item = metadataResult.Item;
-      var json = DeserializeToObject(item.Path, typeof(JsonSeason)) as JsonSeason;
+      var json = DeserializeToObject(metadataFile, typeof(JsonSeason)) as JsonSeason;
       item.Name = json.title;
       item.ForcedSortName = json.sorttitle;
       item.IndexNumber = json.seasonnumber;

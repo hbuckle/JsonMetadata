@@ -27,7 +27,7 @@ namespace JsonMetadata.Parsers {
     protected override void DeserializeItem(MetadataResult<Person> metadataResult, string metadataFile, ILogger logger) {
       logger.Log(LogSeverity.Info, $"JsonMetadata: Deserializing {metadataFile}");
       var item = metadataResult.Item;
-      var json = DeserializeToObject(item.Path, typeof(JsonPerson)) as JsonPerson;
+      var json = DeserializeToObject(metadataFile, typeof(JsonPerson)) as JsonPerson;
       item.Name = json.name;
       item.Overview = json.overview;
       item.PremiereDate = json.birthdate;
