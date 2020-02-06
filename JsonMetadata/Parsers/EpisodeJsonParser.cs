@@ -33,6 +33,7 @@ namespace JsonMetadata.Parsers {
       item.OfficialRating = json.parentalrating;
       item.CustomRating = json.customrating;
       item.SetProviderId(MetadataProviders.Tvdb, json.tvdbid);
+      item.SetProviderId(MetadataProviders.Imdb, json.imdbid);
       item.IsLocked = json.lockdata;
       item.Genres = json.genres;
       AddPeople(metadataResult, json.people);
