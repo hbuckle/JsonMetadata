@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace JsonMetadata.Models {
   public class JsonSeries : JsonObject {
@@ -20,7 +21,8 @@ namespace JsonMetadata.Models {
     public string customrating { get; set; }
     public string displayorder { get; set; }
     public string imdbid { get; set; }
-    public string tmdbid { get; set; }
+    [JsonConverter(typeof(TmdbidConverter))]
+    public long? tmdbid { get; set; }
     public string tvdbid { get; set; }
     public string zap2itid { get; set; }
     public string[] genres { get; set; }

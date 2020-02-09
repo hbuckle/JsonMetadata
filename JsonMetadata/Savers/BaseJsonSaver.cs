@@ -107,7 +107,11 @@ namespace JsonMetadata.Savers {
         var jsonperson = new JsonCastCrew();
         jsonperson.name = person.Name ?? string.Empty;
         jsonperson.id = person.Id;
-        jsonperson.tmdbid = personitem.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty;
+        if (long.TryParse(personitem.GetProviderId(MetadataProviders.Tmdb), out var l)) {
+          jsonperson.tmdbid = l;
+        } else {
+          jsonperson.tmdbid = null;
+        }
         jsonperson.imdbid = personitem.GetProviderId(MetadataProviders.Imdb) ?? string.Empty;
         jsonperson.type = person.Type.ToString();
         jsonperson.path = personitem.Path;

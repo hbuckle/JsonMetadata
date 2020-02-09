@@ -47,12 +47,16 @@ namespace JsonMetadata.Savers {
         parentalrating = item.OfficialRating ?? string.Empty,
         customrating = item.CustomRating ?? string.Empty,
         displayorder = boxset.DisplayOrder.ToString(),
-        tmdbid = item.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty,
         lockdata = item.IsLocked,
         genres = item.Genres,
         studios = item.Studios,
         tags = item.Tags,
       };
+      if (long.TryParse(item.GetProviderId(MetadataProviders.Tmdb), out var l)) {
+        output.tmdbid = l;
+      } else {
+        output.tmdbid = null;
+      }
       AddPeople(item, output, libraryManager);
       var children = boxset.GetItemList(new InternalItemsQuery());
       output.collectionitems = new List<JsonObject>();

@@ -46,11 +46,15 @@ namespace JsonMetadata.Savers {
         placeofbirth = item.ProductionLocations.Length > 0 ? item.ProductionLocations[0] : string.Empty,
         deathdate = item.EndDate.HasValue ? item.EndDate.Value.LocalDateTime : new DateTime?(),
         imdbid = item.GetProviderId(MetadataProviders.Imdb) ?? string.Empty,
-        tmdbid = item.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty,
         lockdata = item.IsLocked,
         tags = item.Tags,
         images = new List<JsonImage>(),
       };
+      if (long.TryParse(item.GetProviderId(MetadataProviders.Tmdb), out var l)) {
+        output.tmdbid = l;
+      } else {
+        output.tmdbid = null;
+      }
       foreach (var image in item.ImageInfos) {
         output.images.Add(new JsonImage()
         {

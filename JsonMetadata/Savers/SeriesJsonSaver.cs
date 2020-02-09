@@ -54,7 +54,6 @@ namespace JsonMetadata.Savers {
         customrating = item.CustomRating ?? string.Empty,
         displayorder = series.DisplayOrder.ToString(),
         imdbid = item.GetProviderId(MetadataProviders.Imdb) ?? string.Empty,
-        tmdbid = item.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty,
         tvdbid = item.GetProviderId(MetadataProviders.Tvdb) ?? string.Empty,
         zap2itid = item.GetProviderId(MetadataProviders.Zap2It) ?? string.Empty,
         lockdata = item.IsLocked,
@@ -62,6 +61,11 @@ namespace JsonMetadata.Savers {
         studios = item.Studios,
         tags = item.Tags,
       };
+      if (long.TryParse(item.GetProviderId(MetadataProviders.Tmdb), out var l)) {
+        output.tmdbid = l;
+      } else {
+        output.tmdbid = null;
+      }
       AddPeople(item, output, libraryManager);
       return output;
     }

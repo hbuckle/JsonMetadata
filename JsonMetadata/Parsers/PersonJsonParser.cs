@@ -35,7 +35,9 @@ namespace JsonMetadata.Parsers {
       item.ProductionLocations = new string[] { json.placeofbirth };
       item.EndDate = json.deathdate;
       item.SetProviderId(MetadataProviders.Imdb, json.imdbid);
-      item.SetProviderId(MetadataProviders.Tmdb, json.tmdbid);
+      if (json.tmdbid.HasValue) {
+        item.SetProviderId(MetadataProviders.Tmdb, json.tmdbid.Value.ToString());
+      } else { item.SetProviderId(MetadataProviders.Tmdb, string.Empty); }
       item.IsLocked = json.lockdata;
       foreach (var image in json.images) {
         var imagetype = (ImageType)Enum.Parse(typeof(ImageType), image.type);

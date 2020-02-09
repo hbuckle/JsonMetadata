@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace JsonMetadata.Models {
   public class JsonBoxSet : JsonObject {
@@ -13,7 +14,8 @@ namespace JsonMetadata.Models {
     public string parentalrating { get; set; }
     public string customrating { get; set; }
     public string displayorder { get; set; }
-    public string tmdbid { get; set; }
+    [JsonConverter(typeof(TmdbidConverter))]
+    public long? tmdbid { get; set; }
     public string[] genres { get; set; }
     public List<JsonCastCrew> people { get; set; }
     public string[] studios { get; set; }

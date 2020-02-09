@@ -83,7 +83,9 @@ namespace JsonMetadata.Parsers {
           Type = (PersonType)Enum.Parse(typeof(PersonType), jsonperson.type),
           Role = jsonperson.role != null ? jsonperson.role : string.Empty,
         };
-        person.SetProviderId(MetadataProviders.Tmdb, jsonperson.tmdbid);
+        if (jsonperson.tmdbid.HasValue) {
+          person.SetProviderId(MetadataProviders.Tmdb, jsonperson.tmdbid.Value.ToString());
+        } else { person.SetProviderId(MetadataProviders.Tmdb, string.Empty); }
         person.SetProviderId(MetadataProviders.Imdb, jsonperson.imdbid);
         metadataResult.AddPerson(person);
       }

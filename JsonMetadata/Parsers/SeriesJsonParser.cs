@@ -43,7 +43,9 @@ namespace JsonMetadata.Parsers {
       item.DisplayOrder = (SeriesDisplayOrder)Enum.Parse(typeof(SeriesDisplayOrder), json.displayorder);
       item.SetDisplayOrder(json.displayorder);
       item.SetProviderId(MetadataProviders.Imdb, json.imdbid);
-      item.SetProviderId(MetadataProviders.Tmdb, json.tmdbid);
+      if (json.tmdbid.HasValue) {
+        item.SetProviderId(MetadataProviders.Tmdb, json.tmdbid.Value.ToString());
+      } else { item.SetProviderId(MetadataProviders.Tmdb, string.Empty); }
       item.SetProviderId(MetadataProviders.Tvdb, json.tvdbid);
       item.SetProviderId(MetadataProviders.Zap2It, json.zap2itid);
       item.Genres = json.genres;

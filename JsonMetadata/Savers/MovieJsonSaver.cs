@@ -81,13 +81,17 @@ namespace JsonMetadata.Savers {
         customrating = item.CustomRating ?? string.Empty,
         // threedformat
         imdbid = item.GetProviderId(MetadataProviders.Imdb) ?? string.Empty,
-        tmdbid = item.GetProviderId(MetadataProviders.Tmdb) ?? string.Empty,
         tmdbcollectionid = item.GetProviderId(MetadataProviders.TmdbCollection) ?? string.Empty,
         lockdata = item.IsLocked,
         genres = item.Genres,
         studios = item.Studios,
         tags = item.Tags,
       };
+      if (long.TryParse(item.GetProviderId(MetadataProviders.Tmdb), out var l)) {
+        output.tmdbid = l;
+      } else {
+        output.tmdbid = null;
+      }
       AddPeople(item, output, libraryManager);
       return output;
     }

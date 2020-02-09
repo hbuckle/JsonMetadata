@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace JsonMetadata.Models {
   public class JsonPerson : JsonObject {
@@ -10,7 +11,8 @@ namespace JsonMetadata.Models {
     public String placeofbirth { get; set; }
     public DateTime? deathdate { get; set; }
     public string imdbid { get; set; }
-    public string tmdbid { get; set; }
+    [JsonConverter(typeof(TmdbidConverter))]
+    public long? tmdbid { get; set; }
     public string[] tags { get; set; }
     public bool lockdata { get; set; }
     public List<JsonImage> images { get; set; }
