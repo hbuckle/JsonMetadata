@@ -143,6 +143,9 @@ namespace JsonMetadata.Savers {
       if (output is JsonSeries) {
         ((JsonSeries)output).people = outpeople;
       }
+      if (output is JsonExtra) {
+        ((JsonExtra)output).people = outpeople;
+      }
     }
   }
 }
