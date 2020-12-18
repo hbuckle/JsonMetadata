@@ -17,7 +17,11 @@ namespace JsonMetadata {
     private readonly IProviderManager _providerManager;
     private readonly IConfigurationManager _config;
 
-    public EntryPoint(IUserDataManager userDataManager, ILibraryManager libraryManager, ILogger logger, IProviderManager providerManager, IConfigurationManager config) {
+    public EntryPoint(IUserDataManager userDataManager,
+    ILibraryManager libraryManager,
+    ILogger logger,
+    IProviderManager providerManager,
+    IConfigurationManager config) {
       _userDataManager = userDataManager;
       _libraryManager = libraryManager;
       _logger = logger;
@@ -46,11 +50,7 @@ namespace JsonMetadata {
         return;
       }
 
-      if (!item.SupportsLocalMetadata) {
-        return;
-      }
-
-      if (!item.IsSaveLocalMetadataEnabled()) {
+      if (!item.IsSaveLocalMetadataEnabled(_libraryManager.GetLibraryOptions(item))) {
         return;
       }
 

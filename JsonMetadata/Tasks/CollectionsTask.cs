@@ -58,7 +58,7 @@ namespace JsonMetadata.Tasks {
 
     public IEnumerable<TaskTriggerInfo> GetDefaultTriggers() {
       return new[]
-      { 
+      {
         // Every so often
         new TaskTriggerInfo
         {

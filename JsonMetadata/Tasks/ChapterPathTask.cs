@@ -54,7 +54,7 @@ namespace JsonMetadata.Tasks {
 
     public IEnumerable<TaskTriggerInfo> GetDefaultTriggers() {
       return new[]
-      { 
+      {
         // Every so often
         new TaskTriggerInfo
         {
@@ -66,50 +66,48 @@ namespace JsonMetadata.Tasks {
 
     public Task Execute(CancellationToken cancellationToken, IProgress<double> progress) {
       var items = libraryManager.GetItemList(new InternalItemsQuery());
-      double count = 1;
-      foreach (var item in items) {
-        double percent = (count / items.Length) * 100;
-        cancellationToken.ThrowIfCancellationRequested();
-        progress.Report(percent);
-        if (item is Video) {
-          List<string> chapters;
-          try {
-            string chapterspath;
-            if (item is Movie) {
-              chapterspath = Path.Combine(item.ContainingFolderPath, "Chapters");
-            } else if (item is Episode) {
-              chapterspath = Path.Combine(item.ContainingFolderPath, "Chapters", item.FileNameWithoutExtension);
-            } else {
-              continue;
-            }
-            chapters = Directory.GetFiles(chapterspath, "*.jpg").ToList();
-            chapters.Sort(
-              (x, y) =>
-                (float.Parse(Path.GetFileNameWithoutExtension(x))).CompareTo(float.Parse(Path.GetFileNameWithoutExtension(y)))
-            );
-          } catch {
-            chapters = new List<string>();
-          }
-          var chapterinfos = new List<ChapterInfo>();
-          var number = 1;
-          foreach (var chapter in chapters) {
-            chapterinfos.Add(new ChapterInfo
-            {
-              ImagePath = chapter,
-              StartPositionTicks = TimeSpan.FromSeconds(double.Parse(Path.GetFileNameWithoutExtension(chapter))).Ticks,
-              Name = $"Chapter {number}",
-              ImageDateModified = new DateTimeOffset(File.GetLastWriteTimeUtc(chapter)),
-            });
-            number++;
-          }
-          if (chapterinfos.Count > 0) {
-            logger.Log(LogSeverity.Info, $"JsonMetadata: Saving chapters for {item.Name}");
-            itemRepository.SaveChapters(item.InternalId, chapterinfos);
-          }
-        }
-        count++;
-      }
+      var movies = items.Where(x => x is Movie);
+      var episodes = items.Where(x => x is Episode);
+      SaveChaptersForItems(movies);
+      SaveChaptersForItems(episodes);
       return Task.CompletedTask;
+    }
+
+    private void SaveChaptersForItems(IEnumerable<BaseItem> items) {
+      foreach (var item in items) {
+        List<string> chapters;
+        try {
+          var chapterspath = Path.Combine(item.ContainingFolderPath, "Chapters", item.FileNameWithoutExtension);
+          logger.Log(LogSeverity.Info, $"JsonMetadata: Chapters path for {item.Name} is {chapterspath}");
+          chapters = Directory.GetFiles(chapterspath, "*.jpg").ToList();
+          logger.Log(LogSeverity.Info, $"JsonMetadata: Found {chapters.Count} chapters for {item.Name}");
+          chapters.Sort(
+            (x, y) =>
+              (float.Parse(Path.GetFileNameWithoutExtension(x))).CompareTo(float.Parse(Path.GetFileNameWithoutExtension(y)))
+          );
+        } catch (DirectoryNotFoundException) {
+          chapters = new List<string>();
+        } catch (Exception e) {
+          logger.Log(LogSeverity.Info, $"JsonMetadata: Exception '{e.Message}' finding chapters for {item.Name}");
+          chapters = new List<string>();
+        }
+        var chapterinfos = new List<ChapterInfo>();
+        var number = 1;
+        foreach (var chapter in chapters) {
+          chapterinfos.Add(new ChapterInfo
+          {
+            ImagePath = chapter,
+            StartPositionTicks = TimeSpan.FromSeconds(double.Parse(Path.GetFileNameWithoutExtension(chapter))).Ticks,
+            Name = $"Chapter {number}",
+            ImageDateModified = new DateTimeOffset(File.GetLastWriteTimeUtc(chapter)),
+          });
+          number++;
+        }
+        // if (chapterinfos.Count > 0) {
+        logger.Log(LogSeverity.Info, $"JsonMetadata: Saving {chapters.Count} chapters for {item.Name}");
+        itemRepository.SaveChapters(item.InternalId, chapterinfos);
+        // }
+      }
     }
   }
 }

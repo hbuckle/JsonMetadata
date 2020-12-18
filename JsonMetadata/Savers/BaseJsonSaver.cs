@@ -12,10 +12,11 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using MediaBrowser.Model.IO;
 
 namespace JsonMetadata.Savers {
-  public abstract class BaseJsonSaver : IMetadataFileSaver {
+  public abstract class BaseJsonSaver : IMetadataSaver {
     protected BaseJsonSaver(
       IFileSystem fileSystem, IServerConfigurationManager configurationManager,
       ILibraryManager libraryManager, IUserManager userManager,
@@ -64,7 +65,7 @@ namespace JsonMetadata.Savers {
 
     public abstract bool IsEnabledFor(BaseItem item, ItemUpdateType updateType);
 
-    public void Save(BaseItem item, CancellationToken cancellationToken) {
+    public Task Save(BaseItem item, LibraryOptions libraryOptions, CancellationToken cancellationToken) {
       var path = GetSavePath(item);
       var serializeditem = SerializeItem(item, ConfigurationManager, LibraryManager);
       var options = new JsonSerializerOptions
@@ -77,6 +78,7 @@ namespace JsonMetadata.Savers {
       FileSystem.CreateDirectory(FileSystem.GetDirectoryName(path));
       FileSystem.SetAttributes(path, false, false);
       File.WriteAllText(path, json);
+      return Task.CompletedTask;
     }
 
     protected abstract JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager);

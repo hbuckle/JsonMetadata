@@ -1,11 +1,12 @@
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Configuration;
+using MediaBrowser.Model.IO;
 using JsonMetadata.Savers;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using MediaBrowser.Model.IO;
 
 namespace JsonMetadata.Providers {
   public abstract class BaseJsonProvider<T> : ILocalMetadataProvider<T>, IHasItemChangeMonitor
@@ -14,6 +15,7 @@ namespace JsonMetadata.Providers {
     protected ILibraryManager LibraryManager;
 
     public Task<MetadataResult<T>> GetMetadata(ItemInfo info,
+        LibraryOptions libraryOptions,
         IDirectoryService directoryService,
         CancellationToken cancellationToken) {
       var result = new MetadataResult<T>();
@@ -49,7 +51,7 @@ namespace JsonMetadata.Providers {
 
     protected abstract FileSystemMetadata GetJsonFile(ItemInfo info, IDirectoryService directoryService);
 
-    public bool HasChanged(BaseItem item, IDirectoryService directoryService) {
+    public bool HasChanged(BaseItem item, LibraryOptions libraryOptions, IDirectoryService directoryService) {
       var file = GetJsonFile(new ItemInfo(item), directoryService);
 
       if (file == null) {

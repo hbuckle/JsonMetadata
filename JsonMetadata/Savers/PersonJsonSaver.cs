@@ -26,7 +26,7 @@ namespace JsonMetadata.Savers {
       return $"{basepath}\\People\\{letter}\\{item.Name} ({id})\\person.json";
     }
     public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType) {
-      if (!item.SupportsLocalMetadata) {
+      if (!item.IsSaveLocalMetadataEnabled(LibraryManager.GetLibraryOptions(item))) {
         return false;
       }
       if (item is Person) {

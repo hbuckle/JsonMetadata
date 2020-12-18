@@ -23,7 +23,7 @@ namespace JsonMetadata.Savers {
     }
 
     public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType) {
-      if (!item.SupportsLocalMetadata) {
+      if (!item.IsSaveLocalMetadataEnabled(LibraryManager.GetLibraryOptions(item))) {
         return false;
       }
       if (item.ExtraType.HasValue) {
