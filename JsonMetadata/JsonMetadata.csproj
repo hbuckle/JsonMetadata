@@ -9,19 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Configuration\json.html" />
-    <None Remove="Configuration\json.js" />
     <None Remove="thumb.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Configuration\json.html" />
-    <EmbeddedResource Include="Configuration\json.js" />
     <EmbeddedResource Include="thumb.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="mediabrowser.server.core" Version="4.6.0.7-beta6" />
+    <PackageReference Include="mediabrowser.server.core" Version="4.6.0.14-beta" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
   </ItemGroup>
 
