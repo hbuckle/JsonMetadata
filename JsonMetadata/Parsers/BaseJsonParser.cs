@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Threading;
+using JsonMetadata.Models;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
@@ -5,12 +11,6 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Logging;
-using JsonMetadata.Models;
-using System;
-using System.Collections.Generic;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Threading;
 
 namespace JsonMetadata.Parsers {
   public class BaseJsonParser<T> where T : BaseItem {
@@ -32,7 +32,6 @@ namespace JsonMetadata.Parsers {
     protected ILibraryManager LibraryManager { get; private set; }
 
     private readonly IConfigurationManager _config;
-    private Dictionary<string, string> _validProviderIds;
 
     public void Fetch(MetadataResult<T> metadataResult, string metadataFile, CancellationToken cancellationToken) {
       if (metadataResult == null) {
@@ -42,23 +41,6 @@ namespace JsonMetadata.Parsers {
       if (string.IsNullOrEmpty(metadataFile)) {
         throw new ArgumentNullException();
       }
-
-      _validProviderIds = _validProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-      var idInfos = ProviderManager.GetExternalIdInfos(metadataResult.Item);
-
-      foreach (var info in idInfos) {
-        var id = info.Key + "Id";
-        if (!_validProviderIds.ContainsKey(id)) {
-          _validProviderIds.Add(id, info.Key);
-        }
-      }
-
-      //Additional Mappings
-      _validProviderIds.Add("collectionnumber", "TmdbCollection");
-      _validProviderIds.Add("tmdbcolid", "TmdbCollection");
-      _validProviderIds.Add("imdb_id", "Imdb");
-
       DeserializeItem(metadataResult, metadataFile, Logger);
     }
 

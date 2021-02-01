@@ -22,22 +22,15 @@ namespace JsonMetadata.Providers {
     }
 
     protected override void Fetch(MetadataResult<Season> result, string path, CancellationToken cancellationToken) {
-      var tmpItem = new MetadataResult<Season>
-      {
-        Item = result.Item
-      };
-      new SeasonJsonParser(_logger, _config, _providerManager, FileSystem, LibraryManager).Fetch(tmpItem, path, cancellationToken);
-
-      result.Item = (Season)tmpItem.Item;
-      result.People = tmpItem.People;
-
-      if (tmpItem.UserDataList != null) {
-        result.UserDataList = tmpItem.UserDataList;
-      }
+      new SeasonJsonParser(
+        _logger, _config, _providerManager, FileSystem, LibraryManager).Fetch(
+          result, path, cancellationToken);
     }
 
     protected override FileSystemMetadata GetJsonFile(ItemInfo info, IDirectoryService directoryService) {
-      return directoryService.GetFile(Path.Combine(info.Path, "season.json"));
+      return directoryService.GetFile(
+        Path.Combine(info.Path, "season.json")
+      );
     }
   }
 }

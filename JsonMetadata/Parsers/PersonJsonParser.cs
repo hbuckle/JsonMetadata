@@ -1,9 +1,3 @@
-using System;
-using System.Linq;
-using System.Text;
-using System.Xml;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
@@ -39,20 +33,6 @@ namespace JsonMetadata.Parsers {
         item.SetProviderId(MetadataProviders.Tmdb, json.tmdbid.Value.ToString());
       } else { item.SetProviderId(MetadataProviders.Tmdb, string.Empty); }
       item.IsLocked = json.lockdata;
-      foreach (var image in json.images) {
-        var imagetype = (ImageType)Enum.Parse(typeof(ImageType), image.type);
-        var exists = item.ImageInfos.FirstOrDefault(i => i.Path == image.path);
-        if (exists == null) {
-          var fsm = new FileSystemMetadata()
-          {
-            FullName = image.path,
-            Exists = true,
-          };
-          item.AddImage(fsm, imagetype);
-        } else {
-          exists.Type = imagetype;
-        }
-      }
       item.Tags = json.tags;
     }
   }
