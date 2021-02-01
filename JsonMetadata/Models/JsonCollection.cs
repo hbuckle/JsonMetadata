@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace JsonMetadata.Models {
-  public class JsonBoxSet : JsonObject {
+  public class JsonCollection : JsonObject {
     public string title { get; set; }
     public string sorttitle { get; set; }
     // public DateTime dateadded { get; set; }
@@ -20,7 +20,6 @@ namespace JsonMetadata.Models {
     public List<JsonCastCrew> people { get; set; }
     public string[] studios { get; set; }
     public string[] tags { get; set; }
-    public List<JsonObject> collectionitems { get; set; }
     public bool lockdata { get; set; }
   }
 }

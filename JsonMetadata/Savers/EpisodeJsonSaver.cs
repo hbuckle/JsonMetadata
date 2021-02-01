@@ -4,8 +4,8 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
-using System.IO;
 using System;
+using System.IO;
 using MediaBrowser.Model.IO;
 using JsonMetadata.Models;
 
@@ -25,10 +25,7 @@ namespace JsonMetadata.Savers {
     }
 
     public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType) {
-      if (!item.IsSaveLocalMetadataEnabled(LibraryManager.GetLibraryOptions(item))) {
-        return false;
-      }
-      return item is Episode && updateType >= MinimumUpdateType;
+      return item is Episode && item.IsFileProtocol;
     }
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager) {

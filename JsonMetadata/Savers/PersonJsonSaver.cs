@@ -5,6 +5,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using System.Collections.Generic;
 using System;
+using System.IO;
 using MediaBrowser.Model.IO;
 using JsonMetadata.Models;
 
@@ -20,19 +21,11 @@ namespace JsonMetadata.Savers {
     ) { }
 
     protected override string GetLocalSavePath(BaseItem item) {
-      var id = item.GetProviderId(MetadataProviders.Tmdb);
-      var letter = item.Name[0];
-      var basepath = ConfigurationManager.ApplicationPaths.InternalMetadataPath;
-      return $"{basepath}\\People\\{letter}\\{item.Name} ({id})\\person.json";
+      return Path.Combine(item.GetInternalMetadataPath(), "person.json");
     }
+
     public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType) {
-      if (!item.IsSaveLocalMetadataEnabled(LibraryManager.GetLibraryOptions(item))) {
-        return false;
-      }
-      if (item is Person) {
-        return updateType >= MinimumUpdateType;
-      }
-      return false;
+      return item is Person;
     }
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager) {
@@ -48,19 +41,11 @@ namespace JsonMetadata.Savers {
         imdbid = item.GetProviderId(MetadataProviders.Imdb) ?? string.Empty,
         lockdata = item.IsLocked,
         tags = item.Tags,
-        images = new List<JsonImage>(),
       };
       if (long.TryParse(item.GetProviderId(MetadataProviders.Tmdb), out var l)) {
         output.tmdbid = l;
       } else {
         output.tmdbid = null;
-      }
-      foreach (var image in item.ImageInfos) {
-        output.images.Add(new JsonImage()
-        {
-          type = image.Type.ToString() ?? string.Empty,
-          path = image.Path ?? string.Empty,
-        });
       }
       return output;
     }

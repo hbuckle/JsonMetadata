@@ -1,6 +1,7 @@
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using System.IO;
 using System;
@@ -23,11 +24,24 @@ namespace JsonMetadata.Savers {
     }
 
     public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType) {
-      if (!item.IsSaveLocalMetadataEnabled(LibraryManager.GetLibraryOptions(item))) {
-        return false;
+      return item.ExtraType.HasValue && IsSupportedExtraType(item.ExtraType.Value);
+    }
+
+    private bool IsSupportedExtraType(ExtraType type) {
+      if (type == ExtraType.Clip) {
+        return true;
       }
-      if (item.ExtraType.HasValue) {
-        return updateType >= MinimumUpdateType;
+      if (type == ExtraType.Trailer) {
+        return true;
+      }
+      if (type == ExtraType.BehindTheScenes) {
+        return true;
+      }
+      if (type == ExtraType.DeletedScene) {
+        return true;
+      }
+      if (type == ExtraType.Interview) {
+        return true;
       }
       return false;
     }

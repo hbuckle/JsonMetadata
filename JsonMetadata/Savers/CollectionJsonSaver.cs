@@ -1,18 +1,16 @@
+using System;
+using System.IO;
+using JsonMetadata.Models;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
-using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Logging;
-using System.Collections.Generic;
-using System.IO;
-using System;
 using MediaBrowser.Model.IO;
-using JsonMetadata.Models;
+using MediaBrowser.Model.Logging;
 
 namespace JsonMetadata.Savers {
-  public class BoxSetJsonSaver : BaseJsonSaver {
-    public BoxSetJsonSaver(
+  public class CollectionJsonSaver : BaseJsonSaver {
+    public CollectionJsonSaver(
       IFileSystem fileSystem, IServerConfigurationManager configurationManager,
       ILibraryManager libraryManager, IUserManager userManager,
       IUserDataManager userDataManager, ILogger logger
@@ -22,19 +20,16 @@ namespace JsonMetadata.Savers {
     ) { }
 
     protected override string GetLocalSavePath(BaseItem item) {
-      return Path.Combine(item.Path, "collection.json");
+      return Path.Combine(item.GetInternalMetadataPath(), "collection.json");
     }
 
     public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType) {
-      if (!item.IsSaveLocalMetadataEnabled(LibraryManager.GetLibraryOptions(item))) {
-        return false;
-      }
-      return item is BoxSet && updateType >= MinimumUpdateType;
+      return item is BoxSet;
     }
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager) {
       var boxset = item as BoxSet;
-      var output = new JsonBoxSet()
+      var output = new JsonCollection()
       {
         id = item.InternalId,
         title = item.Name ?? string.Empty,
@@ -58,18 +53,6 @@ namespace JsonMetadata.Savers {
         output.tmdbid = null;
       }
       AddPeople(item, output, libraryManager);
-      var children = boxset.GetItemList(new InternalItemsQuery());
-      output.collectionitems = new List<JsonObject>();
-      foreach (var child in children) {
-        output.collectionitems.Add(new JsonObject()
-        {
-          id = child.InternalId,
-          path = child.Path,
-        });
-      }
-      output.collectionitems.Sort(delegate (JsonObject x, JsonObject y) {
-        return x.path.CompareTo(y.path);
-      });
       return output;
     }
   }

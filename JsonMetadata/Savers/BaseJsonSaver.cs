@@ -4,7 +4,6 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
-using JsonMetadata.Configuration;
 using JsonMetadata.Models;
 using System;
 using System.Collections.Generic;
@@ -36,15 +35,6 @@ namespace JsonMetadata.Savers {
     protected IUserManager UserManager { get; private set; }
     protected IUserDataManager UserDataManager { get; private set; }
     protected ILogger Logger { get; private set; }
-
-    protected ItemUpdateType MinimumUpdateType {
-      get {
-        if (ConfigurationManager.GetJsonConfiguration().SaveImagePathsInNfo) {
-          return ItemUpdateType.ImageUpdate;
-        }
-        return ItemUpdateType.MetadataDownload;
-      }
-    }
 
     public string Name {
       get {
@@ -83,16 +73,6 @@ namespace JsonMetadata.Savers {
 
     protected abstract JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager);
 
-    protected string GetImagePathToSave(ItemImageInfo image, ILibraryManager libraryManager, IServerConfigurationManager config) {
-      if (!image.IsLocalFile) {
-        return image.Path;
-      }
-
-      return libraryManager.GetPathAfterNetworkSubstitution(
-        new ReadOnlySpan<char>(image.Path.ToCharArray()), new LibraryOptions() { }
-      );
-    }
-
     protected void AddPeople(BaseItem item, JsonObject output, ILibraryManager libraryManager) {
       if (!item.SupportsPeople) { return; }
       var people = libraryManager.GetItemPeople(new InternalPeopleQuery
@@ -116,7 +96,6 @@ namespace JsonMetadata.Savers {
         }
         jsonperson.imdbid = personitem.GetProviderId(MetadataProviders.Imdb) ?? string.Empty;
         jsonperson.type = person.Type.ToString();
-        jsonperson.path = personitem.Path;
         switch (person.Type) {
           case PersonType.Actor:
             jsonperson.role = person.Role ?? string.Empty;
@@ -130,8 +109,8 @@ namespace JsonMetadata.Savers {
             break;
         }
       }
-      if (output is JsonBoxSet) {
-        ((JsonBoxSet)output).people = outpeople;
+      if (output is JsonCollection) {
+        ((JsonCollection)output).people = outpeople;
       }
       if (output is JsonEpisode) {
         ((JsonEpisode)output).people = outpeople;

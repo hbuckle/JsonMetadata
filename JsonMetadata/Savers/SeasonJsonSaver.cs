@@ -25,10 +25,7 @@ namespace JsonMetadata.Savers {
     }
 
     public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType) {
-      if (!item.IsSaveLocalMetadataEnabled(LibraryManager.GetLibraryOptions(item))) {
-        return false;
-      }
-      return item is Season && updateType >= MinimumUpdateType;
+      return item is Season && item.IsFileProtocol;
     }
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager) {
