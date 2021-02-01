@@ -26,6 +26,7 @@ namespace JsonMetadata.Models {
     public List<JsonCastCrew> people { get; set; }
     public string[] studios { get; set; }
     public string[] tags { get; set; }
+    public string[] collections { get; set; }
     public bool lockdata { get; set; }
   }
 }

@@ -15,6 +15,6 @@ namespace JsonMetadata.Models {
     public long? tmdbid { get; set; }
     public string[] tags { get; set; }
     public bool lockdata { get; set; }
-    public List<JsonImage> images { get; set; }
+    // public List<JsonImage> images { get; set; }
   }
 }
