@@ -103,10 +103,8 @@ namespace JsonMetadata.Tasks {
           });
           number++;
         }
-        // if (chapterinfos.Count > 0) {
         logger.Log(LogSeverity.Info, $"JsonMetadata: Saving {chapters.Count} chapters for {item.Name}");
         itemRepository.SaveChapters(item.InternalId, chapterinfos);
-        // }
       }
     }
   }
