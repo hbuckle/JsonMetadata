@@ -36,7 +36,7 @@ namespace JsonMetadata.Savers {
         id = item.InternalId,
         title = item.Name ?? string.Empty,
         originaltitle = item.OriginalTitle ?? string.Empty,
-        sorttitle = item.ForcedSortName ?? string.Empty,
+        sorttitle = item.SortName ?? string.Empty,
         // dateadded = item.DateCreated.LocalDateTime,
         status = series.Status.HasValue ? series.Status.ToString() : string.Empty,
         communityrating = item.CommunityRating,

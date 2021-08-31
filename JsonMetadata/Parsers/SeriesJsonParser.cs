@@ -26,7 +26,7 @@ namespace JsonMetadata.Parsers {
       var json = DeserializeToObject(metadataFile, typeof(JsonSeries)) as JsonSeries;
       item.Name = json.title;
       item.OriginalTitle = json.originaltitle;
-      item.ForcedSortName = json.sorttitle;
+      item.SortName = json.sorttitle;
       if (!string.IsNullOrEmpty(json.status)) {
         item.Status = (SeriesStatus)Enum.Parse(typeof(SeriesStatus), json.status);
       }

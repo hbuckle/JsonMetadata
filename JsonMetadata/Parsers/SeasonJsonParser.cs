@@ -23,7 +23,7 @@ namespace JsonMetadata.Parsers {
       var item = metadataResult.Item;
       var json = DeserializeToObject(metadataFile, typeof(JsonSeason)) as JsonSeason;
       item.Name = json.title;
-      item.ForcedSortName = json.sorttitle;
+      item.SortName = json.sorttitle;
       item.IndexNumber = json.seasonnumber;
       item.CommunityRating = json.communityrating;
       item.Overview = json.overview;

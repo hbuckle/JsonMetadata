@@ -24,7 +24,7 @@ namespace JsonMetadata.Parsers {
       var json = DeserializeToObject(metadataFile, typeof(JsonMovie)) as JsonMovie;
       item.Name = json.title;
       item.OriginalTitle = json.originaltitle;
-      item.ForcedSortName = json.sorttitle;
+      item.SortName = json.sorttitle;
       // item.DateCreated = new DateTimeOffset(jsonmovie.dateadded);
       item.CommunityRating = json.communityrating;
       item.CriticRating = json.criticrating;

@@ -34,7 +34,7 @@ namespace JsonMetadata.Savers {
       {
         id = item.InternalId,
         title = item.Name ?? string.Empty,
-        sorttitle = item.ForcedSortName ?? string.Empty,
+        sorttitle = item.SortName ?? string.Empty,
         // dateadded = item.DateCreated.LocalDateTime,
         seasonnumber = season.IndexNumber,
         communityrating = item.CommunityRating,

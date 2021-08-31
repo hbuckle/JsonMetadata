@@ -23,7 +23,7 @@ namespace JsonMetadata.Parsers {
       var item = metadataResult.Item;
       var json = DeserializeToObject(metadataFile, typeof(JsonCollection)) as JsonCollection;
       item.Name = json.title;
-      item.ForcedSortName = json.sorttitle;
+      item.SortName = json.sorttitle;
       // item.DateCreated = new DateTimeOffset(jsonmovie.dateadded);
       item.CommunityRating = json.communityrating;
       item.Overview = json.overview;
