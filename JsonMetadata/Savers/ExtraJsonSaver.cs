@@ -31,9 +31,6 @@ namespace JsonMetadata.Savers {
       if (type == ExtraType.Clip) {
         return true;
       }
-      if (type == ExtraType.Trailer) {
-        return true;
-      }
       if (type == ExtraType.BehindTheScenes) {
         return true;
       }
@@ -47,7 +44,6 @@ namespace JsonMetadata.Savers {
     }
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager) {
-      Logger.Log(LogSeverity.Info, item.GetType().ToString());
       var output = new JsonExtra()
       {
         id = item.InternalId,
