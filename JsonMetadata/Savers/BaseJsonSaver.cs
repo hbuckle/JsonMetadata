@@ -58,8 +58,7 @@ namespace JsonMetadata.Savers {
     public Task Save(BaseItem item, LibraryOptions libraryOptions, CancellationToken cancellationToken) {
       var path = GetSavePath(item);
       var serializeditem = SerializeItem(item, ConfigurationManager, LibraryManager);
-      var options = new JsonSerializerOptions
-      {
+      var options = new JsonSerializerOptions {
         WriteIndented = true,
         Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
       };
@@ -75,11 +74,9 @@ namespace JsonMetadata.Savers {
 
     protected void AddPeople(BaseItem item, JsonObject output, ILibraryManager libraryManager) {
       if (!item.SupportsPeople) { return; }
-      var people = libraryManager.GetItemPeople(new InternalPeopleQuery
-      {
+      var people = libraryManager.GetItemPeople(new InternalPeopleQuery {
         ItemIds = new[] { item.InternalId },
         EnableImages = true,
-        EnableGuids = true,
         EnableIds = true
       });
       var outpeople = new List<JsonCastCrew>();
@@ -91,7 +88,8 @@ namespace JsonMetadata.Savers {
         jsonperson.id = person.Id;
         if (long.TryParse(personitem.GetProviderId(MetadataProviders.Tmdb), out var l)) {
           jsonperson.tmdbid = l;
-        } else {
+        }
+        else {
           jsonperson.tmdbid = null;
         }
         jsonperson.imdbid = personitem.GetProviderId(MetadataProviders.Imdb) ?? string.Empty;

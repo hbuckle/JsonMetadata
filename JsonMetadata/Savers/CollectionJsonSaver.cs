@@ -29,8 +29,7 @@ namespace JsonMetadata.Savers {
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager) {
       var boxset = item as BoxSet;
-      var output = new JsonCollection()
-      {
+      var output = new JsonCollection() {
         id = item.InternalId,
         title = item.Name ?? string.Empty,
         sorttitle = item.SortName ?? string.Empty,
@@ -49,7 +48,8 @@ namespace JsonMetadata.Savers {
       };
       if (long.TryParse(item.GetProviderId(MetadataProviders.Tmdb), out var l)) {
         output.tmdbid = l;
-      } else {
+      }
+      else {
         output.tmdbid = null;
       }
       AddPeople(item, output, libraryManager);

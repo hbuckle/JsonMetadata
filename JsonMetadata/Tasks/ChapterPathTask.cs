@@ -85,17 +85,18 @@ namespace JsonMetadata.Tasks {
             (x, y) =>
               (float.Parse(Path.GetFileNameWithoutExtension(x))).CompareTo(float.Parse(Path.GetFileNameWithoutExtension(y)))
           );
-        } catch (DirectoryNotFoundException) {
+        }
+        catch (DirectoryNotFoundException) {
           chapters = new List<string>();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
           logger.Log(LogSeverity.Info, $"JsonMetadata: Exception '{e.Message}' finding chapters for {item.Name}");
           chapters = new List<string>();
         }
         var chapterinfos = new List<ChapterInfo>();
         var number = 1;
         foreach (var chapter in chapters) {
-          chapterinfos.Add(new ChapterInfo
-          {
+          chapterinfos.Add(new ChapterInfo {
             ImagePath = chapter,
             StartPositionTicks = TimeSpan.FromSeconds(double.Parse(Path.GetFileNameWithoutExtension(chapter))).Ticks,
             Name = $"Chapter {number}",

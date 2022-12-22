@@ -37,7 +37,8 @@ namespace JsonMetadata.Providers {
         return directoryService.GetFile(
           Path.ChangeExtension(info.Path, ".json")
         );
-      } else {
+      }
+      else {
         return new FileSystemMetadata { Exists = false };
       }
     }

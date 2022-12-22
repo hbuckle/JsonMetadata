@@ -33,9 +33,11 @@ namespace JsonMetadata.Providers {
 
         Fetch(result, path, cancellationToken);
         result.HasMetadata = true;
-      } catch (FileNotFoundException) {
+      }
+      catch (FileNotFoundException) {
         result.HasMetadata = false;
-      } catch (IOException) {
+      }
+      catch (IOException) {
         result.HasMetadata = false;
       }
 

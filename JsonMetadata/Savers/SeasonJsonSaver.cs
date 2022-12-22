@@ -30,8 +30,7 @@ namespace JsonMetadata.Savers {
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager) {
       var season = item as Season;
-      var output = new JsonSeason()
-      {
+      var output = new JsonSeason() {
         id = item.InternalId,
         title = item.Name ?? string.Empty,
         sorttitle = item.SortName ?? string.Empty,

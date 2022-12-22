@@ -31,7 +31,8 @@ namespace JsonMetadata.Models {
     public override void Write(Utf8JsonWriter writer, long? value, JsonSerializerOptions options) {
       if (value.HasValue) {
         writer.WriteNumberValue(value.Value);
-      } else {
+      }
+      else {
         writer.WriteNullValue();
       }
     }

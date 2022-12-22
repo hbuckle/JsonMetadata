@@ -44,8 +44,7 @@ namespace JsonMetadata.Savers {
     }
 
     protected override JsonObject SerializeItem(BaseItem item, IServerConfigurationManager options, ILibraryManager libraryManager) {
-      var output = new JsonExtra()
-      {
+      var output = new JsonExtra() {
         id = item.InternalId,
         title = item.Name ?? string.Empty,
         sorttitle = item.SortName ?? string.Empty,

@@ -31,7 +31,10 @@ namespace JsonMetadata.Parsers {
       item.SetProviderId(MetadataProviders.Imdb, json.imdbid);
       if (json.tmdbid.HasValue) {
         item.SetProviderId(MetadataProviders.Tmdb, json.tmdbid.Value.ToString());
-      } else { item.SetProviderId(MetadataProviders.Tmdb, string.Empty); }
+      }
+      else {
+        item.SetProviderId(MetadataProviders.Tmdb, string.Empty);
+      }
       item.IsLocked = json.lockdata;
       item.Tags = json.tags;
     }

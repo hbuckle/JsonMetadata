@@ -56,7 +56,8 @@ namespace JsonMetadata {
 
       try {
         _providerManager.SaveMetadata(item, updateReason, new[] { BaseJsonSaver.SaverName });
-      } catch (Exception ex) {
+      }
+      catch (Exception ex) {
         _logger.ErrorException("Error saving metadata for {0}", ex, item.Path ?? item.Name);
       }
     }

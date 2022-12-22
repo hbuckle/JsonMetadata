@@ -35,7 +35,10 @@ namespace JsonMetadata.Parsers {
       // 3dformat
       if (json.tmdbid.HasValue) {
         item.SetProviderId(MetadataProviders.Tmdb, json.tmdbid.Value.ToString());
-      } else { item.SetProviderId(MetadataProviders.Tmdb, string.Empty); }
+      }
+      else {
+        item.SetProviderId(MetadataProviders.Tmdb, string.Empty);
+      }
       item.IsLocked = json.lockdata;
       item.Genres = json.genres;
       AddPeople(metadataResult, json.people);

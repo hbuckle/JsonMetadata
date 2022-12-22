@@ -59,15 +59,17 @@ namespace JsonMetadata.Parsers {
     protected void AddPeople(MetadataResult<T> metadataResult, List<JsonCastCrew> people) {
       metadataResult.ResetPeople();
       foreach (var jsonperson in people) {
-        var person = new PersonInfo()
-        {
+        var person = new PersonInfo() {
           Name = jsonperson.name,
           Type = (PersonType)Enum.Parse(typeof(PersonType), jsonperson.type),
           Role = jsonperson.role != null ? jsonperson.role : string.Empty,
         };
         if (jsonperson.tmdbid.HasValue) {
           person.SetProviderId(MetadataProviders.Tmdb, jsonperson.tmdbid.Value.ToString());
-        } else { person.SetProviderId(MetadataProviders.Tmdb, string.Empty); }
+        }
+        else {
+          person.SetProviderId(MetadataProviders.Tmdb, string.Empty);
+        }
         person.SetProviderId(MetadataProviders.Imdb, jsonperson.imdbid);
         metadataResult.AddPerson(person);
       }
