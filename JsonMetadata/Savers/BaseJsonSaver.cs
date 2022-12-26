@@ -103,6 +103,10 @@ namespace JsonMetadata.Savers {
             jsonperson.role = string.Empty;
             outpeople.Insert(0, jsonperson);
             break;
+          case PersonType.Writer:
+            jsonperson.role = string.Empty;
+            outpeople.Insert(1, jsonperson);
+            break;
           default:
             break;
         }
