@@ -21,12 +21,13 @@ namespace JsonMetadata.Models {
     public string imdbid { get; set; }
     [JsonConverter(typeof(TmdbidConverter))]
     public long? tmdbid { get; set; }
-    public string tmdbcollectionid { get; set; }
+    [JsonConverter(typeof(TmdbidConverter))]
+    public long? tmdbcollectionid { get; set; }
     public string[] genres { get; set; }
-    public List<JsonCastCrew> people { get; set; }
+    public List<JsonCastCrew> people { get; set; } = new List<JsonCastCrew>();
     public string[] studios { get; set; }
     public string[] tags { get; set; }
-    public string[] collections { get; set; }
+    public List<string> collections { get; set; } = new List<string>();
     public bool lockdata { get; set; }
   }
 }

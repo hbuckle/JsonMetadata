@@ -43,7 +43,12 @@ namespace JsonMetadata.Parsers {
       else {
         item.SetProviderId(MetadataProviders.Tmdb, string.Empty);
       }
-      item.SetProviderId(MetadataProviders.TmdbCollection, json.tmdbcollectionid);
+      if (json.tmdbcollectionid.HasValue) {
+        item.SetProviderId(MetadataProviders.TmdbCollection, json.tmdbcollectionid.Value.ToString());
+      }
+      else {
+        item.SetProviderId(MetadataProviders.TmdbCollection, string.Empty);
+      }
       item.IsLocked = json.lockdata;
       item.Genres = json.genres;
       AddPeople(metadataResult, json.people);

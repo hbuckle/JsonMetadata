@@ -19,7 +19,7 @@ namespace JsonMetadata.Models {
     public string imdbid { get; set; }
     public string tvdbid { get; set; }
     public string[] genres { get; set; }
-    public List<JsonCastCrew> people { get; set; }
+    public List<JsonCastCrew> people { get; set; } = new List<JsonCastCrew>();
     public string[] studios { get; set; }
     public string[] tags { get; set; }
     public bool lockdata { get; set; }

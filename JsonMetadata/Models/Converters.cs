@@ -20,6 +20,9 @@ namespace JsonMetadata.Models {
     public override long? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
       if (reader.TokenType == JsonTokenType.String) {
         var s = reader.GetString();
+        if (string.IsNullOrEmpty(s)) {
+          return null;
+        }
         return long.Parse(s);
       }
       if (reader.TokenType == JsonTokenType.Null) {
@@ -35,6 +38,16 @@ namespace JsonMetadata.Models {
       else {
         writer.WriteNullValue();
       }
+    }
+  }
+
+  public class NullStringConverter : JsonConverter<string> {
+    public override bool HandleNull => true;
+    public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+      return reader.GetString();
+    }
+    public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options) {
+      writer.WriteStringValue(value ?? string.Empty);
     }
   }
 }
