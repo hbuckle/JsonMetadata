@@ -14,6 +14,7 @@ namespace JsonMetadata.Models {
     public string parentalrating { get; set; }
     public string customrating { get; set; }
     public string tvdbid { get; set; }
+    public string tmdbepisodegroupid { get; set; }
     public string[] genres { get; set; }
     public List<JsonCastCrew> people { get; set; } = new List<JsonCastCrew>();
     public string[] studios { get; set; }

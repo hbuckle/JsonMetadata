@@ -37,6 +37,7 @@ namespace JsonMetadata.Parsers {
       item.Studios = json.studios;
       item.Tags = json.tags;
       item.IsLocked = json.lockdata;
+      item.SetProviderId("TmdbEpisodeGroup", json.tmdbepisodegroupid);
     }
   }
 }

@@ -43,6 +43,7 @@ namespace JsonMetadata.Savers {
         parentalrating = item.OfficialRating ?? string.Empty,
         customrating = item.CustomRating ?? string.Empty,
         tvdbid = item.GetProviderId(MetadataProviders.Tvdb) ?? string.Empty,
+        tmdbepisodegroupid = item.GetProviderId("TmdbEpisodeGroup") ?? string.Empty,
         lockdata = item.IsLocked,
         genres = item.Genres,
         studios = item.Studios,
