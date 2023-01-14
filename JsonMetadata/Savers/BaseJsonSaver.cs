@@ -5,10 +5,10 @@ using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
 using JsonMetadata.Models;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,9 +60,14 @@ namespace JsonMetadata.Savers {
       var serializeditem = SerializeItem(item, ConfigurationManager, LibraryManager);
       var options = new JsonSerializerOptions {
         WriteIndented = true,
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
       };
       options.Converters.Add(new DateTimeConverter("yyyy-MM-dd"));
+      if (FileSystem.FileExists(path)) {
+        var existingJson = System.IO.File.ReadAllBytes(path);
+        var jsonObject = JsonSerializer.Deserialize(existingJson, typeof(JsonObject), options) as JsonObject;
+        serializeditem.customfields = jsonObject.customfields;
+      }
       var json = JsonSerializer.Serialize(serializeditem, serializeditem.GetType(), options);
       FileSystem.CreateDirectory(FileSystem.GetDirectoryName(path));
       FileSystem.SetAttributes(path, false, false);
