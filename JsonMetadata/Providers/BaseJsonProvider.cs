@@ -63,10 +63,6 @@ namespace JsonMetadata.Providers {
       return file.Exists && item.IsGreaterThanDateLastSaved(FileSystem.GetLastWriteTimeUtc(file));
     }
 
-    public string Name {
-      get {
-        return BaseJsonSaver.SaverName;
-      }
-    }
+    public virtual string Name => "BaseJsonProvider";
   }
 }

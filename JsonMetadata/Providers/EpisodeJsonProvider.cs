@@ -32,5 +32,7 @@ namespace JsonMetadata.Providers {
         Path.ChangeExtension(info.Path, ".json")
       );
     }
+
+    public override string Name => "EpisodeJsonProvider";
   }
 }

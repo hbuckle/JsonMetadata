@@ -32,5 +32,7 @@ namespace JsonMetadata.Providers {
         Path.Combine(info.Path, "tvshow.json")
       );
     }
+
+    public override string Name => "SeriesJsonProvider";
   }
 }

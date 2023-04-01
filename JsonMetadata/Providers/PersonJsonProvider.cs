@@ -32,5 +32,7 @@ namespace JsonMetadata.Providers {
         Path.Combine(info.GetInternalMetadataPath(), "person.json")
       );
     }
+
+    public override string Name => "PersonJsonProvider";
   }
 }

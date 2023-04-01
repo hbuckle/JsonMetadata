@@ -42,5 +42,7 @@ namespace JsonMetadata.Providers {
         return new FileSystemMetadata { Exists = false };
       }
     }
+
+    public override string Name => "ExtraJsonProvider";
   }
 }

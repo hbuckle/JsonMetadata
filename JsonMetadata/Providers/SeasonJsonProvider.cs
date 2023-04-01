@@ -32,5 +32,7 @@ namespace JsonMetadata.Providers {
         Path.Combine(info.Path, "season.json")
       );
     }
+
+    public override string Name => "SeasonJsonProvider";
   }
 }

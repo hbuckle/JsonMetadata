@@ -32,5 +32,7 @@ namespace JsonMetadata.Providers {
         Path.Combine(info.GetInternalMetadataPath(), "collection.json")
       );
     }
+
+    public override string Name => "CollectionJsonProvider";
   }
 }
