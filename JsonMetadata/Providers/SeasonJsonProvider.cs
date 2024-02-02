@@ -28,9 +28,7 @@ namespace JsonMetadata.Providers {
     }
 
     protected override FileSystemMetadata GetJsonFile(ItemInfo info, IDirectoryService directoryService) {
-      return directoryService.GetFile(
-        Path.Combine(info.Path, "season.json")
-      );
+      return directoryService.GetFile(Path.Combine(info.Path, "season.json"));
     }
 
     public override string Name => "SeasonJsonProvider";

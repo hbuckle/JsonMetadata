@@ -14,25 +14,21 @@ namespace JsonMetadata {
     private readonly ILogger _logger;
     private readonly ILibraryManager _libraryManager;
     private readonly IProviderManager _providerManager;
-    private readonly IConfigurationManager _config;
 
     public EntryPoint(
       IUserDataManager userDataManager,
       ILibraryManager libraryManager,
       ILogger logger,
-      IProviderManager providerManager,
-      IConfigurationManager config
+      IProviderManager providerManager
     ) {
       _userDataManager = userDataManager;
       _libraryManager = libraryManager;
       _logger = logger;
       _providerManager = providerManager;
-      _config = config;
     }
 
     public void Run() {
       _userDataManager.UserDataSaved += _userDataManager_UserDataSaved;
-
     }
 
     void _userDataManager_UserDataSaved(object sender, UserDataSaveEventArgs e) {

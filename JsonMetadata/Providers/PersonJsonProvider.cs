@@ -28,9 +28,7 @@ namespace JsonMetadata.Providers {
     }
 
     protected override FileSystemMetadata GetJsonFile(ItemInfo info, IDirectoryService directoryService) {
-      return directoryService.GetFile(
-        Path.Combine(info.GetInternalMetadataPath(), "person.json")
-      );
+      return directoryService.GetFile(Path.Combine(info.GetInternalMetadataPath(), "person.json"));
     }
 
     public override string Name => "PersonJsonProvider";

@@ -34,9 +34,7 @@ namespace JsonMetadata.Providers {
         "behind the scenes", "deleted scenes", "interviews",
       };
       if (extrasSubFolders.Contains(directory.ToLower())) {
-        return directoryService.GetFile(
-          Path.ChangeExtension(info.Path, ".json")
-        );
+        return directoryService.GetFile(Path.ChangeExtension(info.Path, ".json"));
       }
       else {
         return new FileSystemMetadata { Exists = false };

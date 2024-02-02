@@ -28,9 +28,7 @@ namespace JsonMetadata.Providers {
     }
 
     protected override FileSystemMetadata GetJsonFile(ItemInfo info, IDirectoryService directoryService) {
-      return directoryService.GetFile(
-        Path.ChangeExtension(info.Path, ".json")
-      );
+      return directoryService.GetFile(Path.ChangeExtension(info.Path, ".json"));
     }
 
     public override string Name => "MovieJsonProvider";
