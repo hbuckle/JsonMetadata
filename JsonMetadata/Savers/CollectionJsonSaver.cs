@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using JsonMetadata.Models;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -44,7 +45,7 @@ namespace JsonMetadata.Savers {
         lockdata = item.IsLocked,
         genres = item.Genres,
         studios = item.Studios,
-        tags = item.Tags,
+        tags = item.Tags.ToList(),
       };
       if (long.TryParse(item.GetProviderId(MetadataProviders.Tmdb), out var l)) {
         output.tmdbid = l;

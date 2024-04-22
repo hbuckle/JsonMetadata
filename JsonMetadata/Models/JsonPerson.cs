@@ -13,7 +13,7 @@ namespace JsonMetadata.Models {
     public string imdbid { get; set; }
     [JsonConverter(typeof(TmdbidConverter))]
     public long? tmdbid { get; set; }
-    public string[] tags { get; set; }
+    public List<string> tags { get; set; } = new List<string>();
     public bool lockdata { get; set; }
     // public List<JsonImage> images { get; set; }
   }

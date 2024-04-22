@@ -1,14 +1,14 @@
+using System;
+using System.IO;
+using System.Linq;
+using JsonMetadata.Models;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Logging;
-using System.IO;
-using System;
-using System.Linq;
 using MediaBrowser.Model.IO;
-using JsonMetadata.Models;
+using MediaBrowser.Model.Logging;
 
 namespace JsonMetadata.Savers {
   public class SeriesJsonSaver : BaseJsonSaver {
@@ -55,7 +55,7 @@ namespace JsonMetadata.Savers {
         lockdata = item.IsLocked,
         genres = item.Genres,
         studios = item.Studios,
-        tags = item.Tags,
+        tags = item.Tags.ToList(),
       };
       if (long.TryParse(item.GetProviderId(MetadataProviders.Tmdb), out var l)) {
         output.tmdbid = l;

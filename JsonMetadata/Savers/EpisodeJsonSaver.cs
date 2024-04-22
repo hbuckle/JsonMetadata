@@ -1,13 +1,14 @@
+using System;
+using System.IO;
+using System.Linq;
+using JsonMetadata.Models;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Logging;
-using System;
-using System.IO;
 using MediaBrowser.Model.IO;
-using JsonMetadata.Models;
+using MediaBrowser.Model.Logging;
 
 namespace JsonMetadata.Savers {
   public class EpisodeJsonSaver : BaseJsonSaver {
@@ -48,7 +49,7 @@ namespace JsonMetadata.Savers {
         lockdata = item.IsLocked,
         genres = item.Genres,
         studios = item.Studios,
-        tags = item.Tags,
+        tags = item.Tags.ToList(),
       };
       AddPeople(item, output, libraryManager);
       return output;

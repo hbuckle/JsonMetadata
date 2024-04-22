@@ -78,12 +78,10 @@ namespace JsonMetadata.Tasks {
         List<string> chapters;
         try {
           var chapterspath = Path.Combine(item.ContainingFolderPath, "Chapters", item.FileNameWithoutExtension);
-          logger.Log(LogSeverity.Info, $"JsonMetadata: Chapters path for {item.Name} is {chapterspath}");
           chapters = Directory.GetFiles(chapterspath, "*.jpg").ToList();
-          logger.Log(LogSeverity.Info, $"JsonMetadata: Found {chapters.Count} chapters for {item.Name}");
           chapters.Sort(
             (x, y) =>
-              (float.Parse(Path.GetFileNameWithoutExtension(x))).CompareTo(float.Parse(Path.GetFileNameWithoutExtension(y)))
+              float.Parse(Path.GetFileNameWithoutExtension(x)).CompareTo(float.Parse(Path.GetFileNameWithoutExtension(y)))
           );
         }
         catch (DirectoryNotFoundException) {
@@ -104,7 +102,6 @@ namespace JsonMetadata.Tasks {
           });
           number++;
         }
-        logger.Log(LogSeverity.Info, $"JsonMetadata: Saving {chapters.Count} chapters for {item.Name}");
         itemRepository.SaveChapters(item.InternalId, chapterinfos);
       }
     }

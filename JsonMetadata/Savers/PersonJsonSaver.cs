@@ -1,13 +1,13 @@
+using System;
+using System.IO;
+using System.Linq;
+using JsonMetadata.Models;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Logging;
-using System.Collections.Generic;
-using System;
-using System.IO;
 using MediaBrowser.Model.IO;
-using JsonMetadata.Models;
 
 namespace JsonMetadata.Savers {
   public class PersonJsonSaver : BaseJsonSaver {
@@ -39,7 +39,7 @@ namespace JsonMetadata.Savers {
         deathdate = item.EndDate.HasValue ? item.EndDate.Value.LocalDateTime : new DateTime?(),
         imdbid = item.GetProviderId(MetadataProviders.Imdb) ?? string.Empty,
         lockdata = item.IsLocked,
-        tags = item.Tags,
+        tags = item.Tags.ToList(),
       };
       if (long.TryParse(item.GetProviderId(MetadataProviders.Tmdb), out var l)) {
         output.tmdbid = l;

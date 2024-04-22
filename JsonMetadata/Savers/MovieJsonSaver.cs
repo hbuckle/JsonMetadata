@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using JsonMetadata.Models;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -22,7 +23,16 @@ namespace JsonMetadata.Savers {
     ) { }
 
     protected override string GetLocalSavePath(BaseItem item) {
-      return Path.ChangeExtension(item.Path, ".json");
+      string extension = Path.GetExtension(item.Path);
+      string name = Path.GetFileNameWithoutExtension(item.Path);
+      string file = Path.ChangeExtension(item.Path, ".json");
+      if (Regex.IsMatch(name, $"^[\\w\\s]+Part [1-9]$")) {
+        string trimmedName = name.Substring(0, name.Length - " Part x".Length);
+        if (Directory.EnumerateFiles(item.ContainingFolderPath, $"{trimmedName} Part *{extension}").Count() > 1) {
+          file = Path.Combine(item.ContainingFolderPath, $"{trimmedName}.json");
+        }
+      }
+      return file;
     }
 
     public override bool IsEnabledFor(BaseItem item, ItemUpdateType updateType) {
@@ -49,7 +59,7 @@ namespace JsonMetadata.Savers {
         lockdata = item.IsLocked,
         genres = item.Genres,
         studios = item.Studios,
-        tags = item.Tags,
+        tags = item.Tags.ToList(),
         collections = item.Collections.Select(x => x.Name).ToList(),
       };
       if (long.TryParse(item.GetProviderId(MetadataProviders.Tmdb), out var l)) {

@@ -36,7 +36,7 @@ namespace JsonMetadata.Parsers {
         item.SetProviderId(MetadataProviders.Tmdb, string.Empty);
       }
       item.IsLocked = json.lockdata;
-      item.Tags = json.tags;
+      item.Tags = json.tags.ToArray();
     }
   }
 }

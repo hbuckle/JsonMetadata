@@ -35,7 +35,7 @@ namespace JsonMetadata.Parsers {
       item.Genres = json.genres;
       AddPeople(metadataResult, json.people);
       item.Studios = json.studios;
-      item.Tags = json.tags;
+      item.Tags = json.tags.ToArray();
       item.IsLocked = json.lockdata;
       item.SetProviderId("TmdbEpisodeGroup", json.tmdbepisodegroupid);
     }
