@@ -1,6 +1,7 @@
 using System;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Controller.Providers;
@@ -46,7 +47,7 @@ namespace JsonMetadata {
         return;
       }
 
-      if (!item.IsSaveLocalMetadataEnabled(_libraryManager.GetLibraryOptions(item))) {
+      if (!(item is Video || item is Season || item is Series || item is Person || item is BoxSet)) {
         return;
       }
 

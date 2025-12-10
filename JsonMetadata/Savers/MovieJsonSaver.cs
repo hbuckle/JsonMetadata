@@ -26,7 +26,7 @@ namespace JsonMetadata.Savers {
       string extension = Path.GetExtension(item.Path);
       string name = Path.GetFileNameWithoutExtension(item.Path);
       string file = Path.ChangeExtension(item.Path, ".json");
-      if (Regex.IsMatch(name, $"^[\\w\\s]+Part [1-9]$")) {
+      if (Regex.IsMatch(name, $"^.*Part [1-9]$")) {
         string trimmedName = name.Substring(0, name.Length - " Part x".Length);
         if (Directory.EnumerateFiles(item.ContainingFolderPath, $"{trimmedName} Part *{extension}").Count() > 1) {
           file = Path.Combine(item.ContainingFolderPath, $"{trimmedName}.json");

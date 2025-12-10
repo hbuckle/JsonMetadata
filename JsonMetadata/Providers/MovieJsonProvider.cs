@@ -34,7 +34,7 @@ namespace JsonMetadata.Providers {
       string extension = Path.GetExtension(info.Path);
       string name = Path.GetFileNameWithoutExtension(info.Path);
       string file = Path.ChangeExtension(info.Path, ".json");
-      if (Regex.IsMatch(name, $"^[\\w\\s]+Part [1-9]$")) {
+      if (Regex.IsMatch(name, $"^.*Part [1-9]$")) {
         string trimmedName = name.Substring(0, name.Length - " Part x".Length);
         if (Directory.EnumerateFiles(info.ContainingFolderPath, $"{trimmedName} Part *{extension}").Count() > 1) {
           file = Path.Combine(info.ContainingFolderPath, $"{trimmedName}.json");
